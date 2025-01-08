@@ -1,0 +1,6 @@
+[core]
+    remote = gcp_remote
+['remote "gdrive_remote"']
+    url = gdrive://1v0KVGJ9L4kLwXrxZ_Ji1f5zN0pZcJOfK
+['remote "gcp_remote"']
+    url = gs://mlops-group-project
