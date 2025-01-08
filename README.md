@@ -1,6 +1,6 @@
 # mlops_project
 
-None
+This is the repository for MLOps. Our project is  based on the Classification task: HOTDOG/ NOT HOTDOG. It's a deep learning task .........
 
 ## Project structure
 

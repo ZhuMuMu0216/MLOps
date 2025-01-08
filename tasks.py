@@ -4,7 +4,7 @@ from invoke import Context, task
 
 WINDOWS = os.name == "nt"
 PROJECT_NAME = "mlops_project"
-PYTHON_VERSION = "3.11"
+PYTHON_VERSION = "3.10.16"
 
 # Setup commands
 @task
