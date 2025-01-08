@@ -1,4 +1,4 @@
-import time
+
 import torch
 import copy
 import os
@@ -101,7 +101,7 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
 
 def main():
     # Local data path
-    data_path = "MLOps\data"
+    data_path = os.path.normpath("/data") 
     transform = transforms.Compose([
         transforms.Resize((128, 128)),            # Resize image to 128x128
         transforms.ToTensor(),                   # Convert to tensor (CxHxW format)

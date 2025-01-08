@@ -1,5 +1,4 @@
 import torch
-import wandb
 
 def evaluate_model(model, test_loader, device):
     model.eval()
