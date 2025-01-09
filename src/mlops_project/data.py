@@ -1,5 +1,4 @@
 import os
-import torch
 from torch.utils.data import Dataset, DataLoader
 import torchvision.transforms as transforms
 import PIL.Image as Image
@@ -14,7 +13,7 @@ class HotdogNotHotdog(Dataset):
             train (bool): If True, load training data; otherwise, load testing data
             transform (callable): Data augmentation or preprocessing function
         """
-        self.data_path = os.path.join(data_path, 'train' if train else 'test')
+        self.data_path = os.path.join(data_path, "train" if train else "test")
         self.image_paths = []
         self.labels = []
         self.transform = transform
@@ -26,7 +25,7 @@ class HotdogNotHotdog(Dataset):
         for class_name, label in self.class_to_label.items():
             class_dir = os.path.join(self.data_path, class_name)
             for img_file in os.listdir(class_dir):
-                if img_file.endswith('.jpg'):  # Process only .jpg files
+                if img_file.endswith(".jpg"):  # Process only .jpg files
                     self.image_paths.append(os.path.join(class_dir, img_file))
                     self.labels.append(label)
 
@@ -83,12 +82,13 @@ if __name__ == "__main__":
     # Normalize data_path for cross-platform compatibility
     data_path = os.path.normpath("/data")  # Automatically adjusts path for current OS
 
-    
-    transform = transforms.Compose([
-        transforms.Resize((128, 128)),            # Resize image to 128x128
-        transforms.ToTensor(),                   # Convert to tensor (CxHxW format)
-        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])  # Normalize to [-1, 1]
-    ])
+    transform = transforms.Compose(
+        [
+            transforms.Resize((128, 128)),  # Resize image to 128x128
+            transforms.ToTensor(),  # Convert to tensor (CxHxW format)
+            transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),  # Normalize to [-1, 1]
+        ]
+    )
 
     # Get DataLoaders
     train_loader, test_loader = get_dataloaders(data_path, batch_size=4, transform=transform)
