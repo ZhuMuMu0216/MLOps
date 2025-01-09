@@ -176,7 +176,9 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-/data
+# Leave data root path for Github Actions to download datasets
+data/test/
+data/train/
 
 # Prevent accidentally upload GCP service account key
 .dvc/mlops*.json

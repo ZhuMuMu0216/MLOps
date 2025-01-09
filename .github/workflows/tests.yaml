@@ -37,6 +37,9 @@ jobs:
           pip install -e .
           pip list
 
+      - name: Download datasets
+        run: dvc pull
+
       - name: Run tests & coverage
         run: |
           coverage run -m pytest tests/
