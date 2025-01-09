@@ -6,10 +6,9 @@ pillow==11.0.0
 torchvision==0.20.1
 dvc-gdrive==3.0.1
 dvc==3.58.0
+dvc-gs==3.0.1
 matplotlib==3.10.0
 pandas==1.5.3
 numpy==1.26.4
-coverage
-pytest
-dvc
-dvc-gs
+wandb==0.19.2
+
