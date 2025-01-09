@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+      - Boyang
+      - Lin
+      - Wenji
   pull_request:
     branches:
       - main
