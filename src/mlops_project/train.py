@@ -5,6 +5,7 @@ import torchvision.transforms as transforms
 from visualize import plot_performance, save_to_excel
 from data import get_dataloaders
 from model import ResNet18
+import wandb
 
 def train_model(model, train_loader, test_loader, optimizer, num_epochs):
     """
@@ -88,9 +89,11 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
             if phase == 'train':
                 train_losses.append(epoch_loss)
                 train_accs.append(epoch_acc)
+                wandb.log({"train_loss": epoch_loss, "train_acc": epoch_acc})
             else:
                 val_losses.append(epoch_loss)
                 val_accs.append(epoch_acc)
+                wandb.log({"val_loss": epoch_loss, "val_acc": epoch_acc})
                 
             print(f'{phase} Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}')
             
@@ -122,9 +125,22 @@ def main():
     Returns:
         model_performances (dict): Dictionary containing model performances.
     """
+    # start a new wandb run to track this script
+    wandb.init(
+        # set the wandb project where this run will be logged
+        project="my-awesome-project",
+
+        # track hyperparameters and run metadata
+        config={
+        "learning_rate": 0.001,
+        "architecture": "ResNet",
+        "dataset": "Hotdog/notHodog",
+        "epochs": 2,
+        }
+    )
 
     # Local data path
-    data_path = os.path.normpath("/data") 
+    data_path = os.path.normpath("data") 
     transform = transforms.Compose([
         transforms.Resize((128, 128)),            # Resize image to 128x128
         transforms.ToTensor(),                   # Convert to tensor (CxHxW format)
@@ -136,7 +152,7 @@ def main():
     # Load the model
     model = ResNet18(num_classes=1)
     # Define the optimizers
-    optimizers =   torch.optim.Adam(model.parameters(), lr=0.001),
+    optimizers = torch.optim.Adam(model.parameters(), lr=0.001),
     num_epochs = 2
     model_performances = {}
 
@@ -146,6 +162,7 @@ def main():
             'model': model,
             'performance': performance,
         }
+    wandb.finish()
         
     return model_performances
 
