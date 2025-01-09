@@ -13,8 +13,8 @@ The directory structure of the project looks like this:
 │       └── tests.yaml
 ├── configs/                  # Configuration files
 ├── data/                     # Data directory
-│   ├── processed
-│   └── raw
+│   ├── train
+│   └── test
 ├── dockerfiles/              # Dockerfiles
 │   ├── api.Dockerfile
 │   └── train.Dockerfile
@@ -55,9 +55,15 @@ Created using [mlops_template](https://github.com/SkafteNicki/mlops_template),
 a [cookiecutter template](https://github.com/cookiecutter/cookiecutter) for getting
 started with Machine Learning Operations (MLOps).
 
-## How to run the code in docker
+## How to download the dataset
+1. You should enter the `MLOps` directory.
 
-1. you should in the `MLOps` directory.
+2. Run the below command in your terminal.
+    ```
+    dvc pull
+    ```
+## How to run the code in docker
+1. You should enter the `MLOps` directory.
 
 2. Run the below command in your terminal, and you will build the docker image based on my dockerfile.
 
