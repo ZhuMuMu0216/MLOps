@@ -38,7 +38,7 @@ jobs:
           pip list
 
       - name: Download datasets
-        run: dvc pull
+        run: dvc pull -v --force
 
       - name: Run tests & coverage
         run: |
