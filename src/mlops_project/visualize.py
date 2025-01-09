@@ -4,8 +4,19 @@ import os
 import pandas as pd
 
 def plot_performance(train_losses, val_losses, train_accs, val_accs, opt_name, save_path):
+    """
+    Visualize the training and validation performance of a model.
+
+    Args:
+        train_losses (list): List of training losses.
+        val_losses (list): List of validation losses.
+        train_accs (list): List of training accuracies.
+        val_accs (list): List of validation accuracies.
+        opt_name (str): Name of the optimizer used.
+        save_path (str): Path to save the plot.
+    """
+
     epochs = range(1, len(train_losses) + 1)
-    
     # Convert tensors to numpy if needed
     train_accs = [acc.cpu().numpy() if isinstance(acc, torch.Tensor) else acc for acc in train_accs]
     val_accs = [acc.cpu().numpy() if isinstance(acc, torch.Tensor) else acc for acc in val_accs]
@@ -38,8 +49,15 @@ def plot_performance(train_losses, val_losses, train_accs, val_accs, opt_name, s
     plt.close()
 
 def save_to_excel(data, excel_file):
+    """
+    Save data to the excel file
+
+    Args:
+        data (dict): Dictionary containing data to save.
+        excel_file (str): Path to the excel file.
+    """
+
     df = pd.DataFrame(data)
-    
     if os.path.exists(excel_file):
         existing_df = pd.read_excel(excel_file)
         df = pd.concat([existing_df, df], ignore_index=True)

@@ -82,8 +82,6 @@ if __name__ == "__main__":
     # Local data path
     # Normalize data_path for cross-platform compatibility
     data_path = os.path.normpath("/data")  # Automatically adjusts path for current OS
-
-    
     transform = transforms.Compose([
         transforms.Resize((128, 128)),            # Resize image to 128x128
         transforms.ToTensor(),                   # Convert to tensor (CxHxW format)

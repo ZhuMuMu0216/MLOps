@@ -1,4 +1,3 @@
-
 import torch
 import copy
 import os
@@ -8,6 +7,23 @@ from data import get_dataloaders
 from model import ResNet18
 
 def train_model(model, train_loader, test_loader, optimizer, num_epochs):
+    """
+    Train the model and get the performance results.
+
+    Args:
+        model (torch.nn.Module): Model to train.
+        train_loader (DataLoader): DataLoader for the training dataset.
+        test_loader (DataLoader): DataLoader for the test dataset.
+        optimizer (torch.optim.Optimizer): Optimizer to use for training.
+        num_epochs (int): Number of epochs to train the model.
+    
+    Returns:
+        model (torch.nn.Module): Trained model.
+        performance (dict): Dictionary containing performance metrics
+    """
+
+
+
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     model = model.to(device)
     initial_model = copy.deepcopy(model)
@@ -100,6 +116,13 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
     }
 
 def main():
+    """
+    Entry point for the above training method
+
+    Returns:
+        model_performances (dict): Dictionary containing model performances.
+    """
+
     # Local data path
     data_path = os.path.normpath("/data") 
     transform = transforms.Compose([
@@ -110,20 +133,15 @@ def main():
 
     # Get DataLoaders
     train_loader, test_loader = get_dataloaders(data_path, batch_size=4, transform=transform)
-    
     # Load the model
     model = ResNet18(num_classes=1)
-    
     # Define the optimizers
     optimizers =   torch.optim.Adam(model.parameters(), lr=0.001),
-
-    
     num_epochs = 2
     model_performances = {}
-    
+
     for optimizer in optimizers:
         model, performance = train_model(model, train_loader, test_loader, optimizer, num_epochs)
-        
         model_performances[optimizer.__class__.__name__] = {
             'model': model,
             'performance': performance,
@@ -131,6 +149,6 @@ def main():
         
     return model_performances
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     model_performances = main()
