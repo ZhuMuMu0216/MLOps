@@ -1,4 +1,4 @@
-name: Unit Tests
+name: Unit Tests & Google cloud build
 
 on:
   push:
@@ -13,8 +13,8 @@ jobs:
     runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
-        operating-system: ["ubuntu-latest"]
-        python-version: ["3.10.16", "3.11"]
+        operating-system: [ "ubuntu-latest" ]
+        python-version: [ "3.10.16", "3.11" ]
 
     steps:
       - name: Checkout code
@@ -42,3 +42,22 @@ jobs:
         run: |
           coverage run -m pytest tests/
           coverage report -m -i
+
+  build:
+    needs: test
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'pull_request' && github.base_ref == 'main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Auth with GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCLOUD_SERVICE_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Submit build
+        run: gcloud builds submit --config cloudbuild.yaml
