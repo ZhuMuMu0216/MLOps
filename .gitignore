@@ -182,3 +182,5 @@ data/train/
 
 # Prevent accidentally upload GCP service account key
 .dvc/mlops*.json
+
+wandb/
