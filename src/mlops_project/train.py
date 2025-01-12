@@ -6,7 +6,11 @@ from visualize import plot_performance, save_to_excel
 from data import get_dataloaders
 from model import ResNet18
 import wandb
+import typer
 
+app = typer.Typer()
+
+@app.command()
 def train_model(model, train_loader, test_loader, optimizer, num_epochs):
     """
     Train the model and get the performance results.
@@ -115,8 +119,8 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
         "val_accs": val_accs,
     }
 
-
-def main():
+@app.command()
+def entrypoint(epoch: int = 2):
     """
     Entry point for the above training method
 
@@ -133,7 +137,7 @@ def main():
         "learning_rate": 0.001,
         "architecture": "ResNet",
         "dataset": "Hotdog/notHodog",
-        "epochs": 2,
+        "epochs": epoch,
         }
     )
 
@@ -151,7 +155,7 @@ def main():
     model = ResNet18(num_classes=1)
     # Define the optimizers
     optimizers = torch.optim.Adam(model.parameters(), lr=0.001),
-    num_epochs = 2
+    num_epochs = epoch
     model_performances = {}
 
     for optimizer in optimizers:
@@ -166,4 +170,4 @@ def main():
 
 
 if __name__ == "__main__":
-    model_performances = main()
+    model_performances = app()

@@ -1,0 +1,6 @@
+workerPoolSpecs:
+  machineSpec:
+    machineType: n1-highmem-2  # choose machine type
+  replicaCount: 1  # required machine number 
+  containerSpec:
+    imageUri: europe-west1-docker.pkg.dev/mlops-groupwork/mlops-docker-repo/model-training:latest

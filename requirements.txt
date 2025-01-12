@@ -1,5 +1,6 @@
 torch==2.5.1
 typer==0.15.1
+invoke==2.2.0
 fastapi==0.115.6
 uvicorn==0.34.0
 pillow==11.0.0
