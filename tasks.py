@@ -33,15 +33,16 @@ def dev_requirements(ctx: Context) -> None:
     ctx.run(f'{python_cmd} -m pip install -e .["dev"]', echo=True, pty=not WINDOWS)
 
 
-
-# Project commands
 @task
-def train(ctx: Context, epochs: int = 2) -> None:
+def train(ctx: Context, epoch: int = 10) -> None:
     """Train model."""
     python_cmd = "python" if WINDOWS else "python3"
-    ctx.run(f"{python_cmd} src/{PROJECT_NAME}/train.py entrypoint --epoch {epochs}", echo=True, pty=not WINDOWS)
+    base_command = f"{python_cmd} src/{PROJECT_NAME}/train.py entrypoint --epoch {epoch}"
+    
+    ctx.run(base_command, echo=True, pty=not WINDOWS)
 # Use command
 # invoke train --epochs '2'
+
 
 @task
 def test(ctx: Context) -> None:
@@ -52,6 +53,7 @@ def test(ctx: Context) -> None:
 
 @task
 def git(ctx, message):
+    '''git add, commit and push'''
     ctx.run(f"git add .")
     ctx.run(f"git commit -m '{message}'")
     ctx.run(f"git push")
@@ -73,6 +75,7 @@ def docker_build(ctx: Context, progress: str = "plain") -> None:
 
 @task
 def pull_data(ctx):
+    '''Pull data from remote storage'''
     ctx.run("dvc pull")
 
 

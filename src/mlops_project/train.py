@@ -7,6 +7,7 @@ from data import get_dataloaders
 from model import ResNet18
 import wandb
 import typer
+from torch.profiler import profile, ProfilerActivity
 
 app = typer.Typer()
 
@@ -66,26 +67,27 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
 
             running_loss = 0.0
             running_corrects = 0
-
-            for inputs, labels in data_loader:
-                inputs = inputs.to(device)
-                labels = labels.to(device)
-
-                if phase == "train":
-                    optimizer.zero_grad()
-
-                with torch.set_grad_enabled(phase == "train"):
-                    outputs = model(inputs)
-                    preds = (torch.sigmoid(outputs) > 0.5).float()
-                    loss = criterion(outputs, labels.unsqueeze(1).float())
+            with profile(activities=[ProfilerActivity.CPU], record_shapes=True) as prof:  # add ProfilerActivity.CUDA   if we use CUDA
+                for inputs, labels in data_loader:
+                    inputs = inputs.to(device)
+                    labels = labels.to(device)
 
                     if phase == "train":
-                        loss.backward()
-                        optimizer.step()
+                        optimizer.zero_grad()
 
-                running_loss += loss.item() * inputs.size(0)
-                running_corrects += torch.sum(preds == labels.unsqueeze(1))
+                    with torch.set_grad_enabled(phase == "train"):
+                        outputs = model(inputs)
+                        preds = (torch.sigmoid(outputs) > 0.5).float()
+                        loss = criterion(outputs, labels.unsqueeze(1).float())
 
+                        if phase == "train":
+                            loss.backward()
+                            optimizer.step()
+
+                    running_loss += loss.item() * inputs.size(0)
+                    running_corrects += torch.sum(preds == labels.unsqueeze(1))
+                prof.export_chrome_trace("trace.json")
+                
             epoch_loss = running_loss / len(data_loader.dataset)
             epoch_acc = running_corrects.double() / len(data_loader.dataset)
 
