@@ -1,28 +1,33 @@
 {
   "os":  "Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35",
   "python":  "CPython 3.12.4",
-  "startedAt":  "2025-01-09T17:24:52.615166Z",
+  "startedAt":  "2025-01-12T11:35:27.029028Z",
+  "args":  [
+    "entrypoint",
+    "--epoch",
+    "2"
+  ],
   "program":  "/home/linzhu/MLOps-project/MLOps/src/mlops_project/train.py",
   "codePath":  "src/mlops_project/train.py",
   "git":  {
     "remote":  "https://github.com/ZhuMuMu0216/MLOps.git",
-    "commit":  "e6aa763970efc7be4cb5d22def374bcedd7ebea4"
+    "commit":  "80a7c8cf01fc323ce3a5bb407feddf07418fe7d1"
   },
   "email":  "ZhuLin252@outlook.com",
-  "root":  "/home/linzhu/MLOps-project/MLOps",
+  "root":  "/home/linzhu/MLOps-project/MLOps/src/mlops_project",
   "host":  "LinZhu",
   "executable":  "/home/linzhu/MLOps-project/mlops/bin/python",
-  "codePathLocal":  "src/mlops_project/train.py",
+  "codePathLocal":  "train.py",
   "cpu_count":  8,
   "cpu_count_logical":  16,
   "disk":  {
     "/":  {
       "total":  "1081101176832",
-      "used":  "27672956928"
+      "used":  "27274469376"
     }
   },
   "memory":  {
-    "total":  "8187625472"
+    "total":  "8187629568"
   },
   "cpu":  {
     "count":  8,

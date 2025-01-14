@@ -56,6 +56,14 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCLOUD_SERVICE_KEY }}
 
+      - name: transfer github secret to file
+        env:
+          CLOUD_STORAGE_TRAINED_MODELS: ${{ secrets.CLOUD_STORAGE_TRAINED_MODELS }}
+        run: |
+          mkdir -p keys
+          echo "$CLOUD_STORAGE_TRAINED_MODELS" > keys/cloud_storage_key.json
+
+
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
