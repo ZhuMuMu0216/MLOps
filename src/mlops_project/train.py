@@ -2,14 +2,15 @@ import torch
 import copy
 import os
 import torchvision.transforms as transforms
-from visualize import plot_performance
 from data import get_dataloaders
 from model import ResNet18
 import wandb
 import typer
 from torch.profiler import profile, ProfilerActivity
 from google.cloud import storage
+
 app = typer.Typer()
+
 
 @app.command()
 def train_model(model, train_loader, test_loader, optimizer, num_epochs):
@@ -64,7 +65,9 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
 
             running_loss = 0.0
             running_corrects = 0
-            with profile(activities=[ProfilerActivity.CPU], record_shapes=True) as prof:  # add ProfilerActivity.CUDA   if we use CUDA
+            with profile(
+                activities=[ProfilerActivity.CPU], record_shapes=True
+            ) as prof:  # add ProfilerActivity.CUDA   if we use CUDA
                 for inputs, labels in data_loader:
                     inputs = inputs.to(device)
                     labels = labels.to(device)
@@ -84,7 +87,7 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
                     running_loss += loss.item() * inputs.size(0)
                     running_corrects += torch.sum(preds == labels.unsqueeze(1))
                 prof.export_chrome_trace("trace.json")
-                
+
             epoch_loss = running_loss / len(data_loader.dataset)
             epoch_acc = running_corrects.double() / len(data_loader.dataset)
 
@@ -95,14 +98,12 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
             else:
                 val_losses.append(epoch_loss)
                 val_accs.append(epoch_acc)
-                wandb.log({"val_loss": epoch_loss, "val_acc": epoch_acc})     
-            print(f'{phase} Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}')
-            
-            if phase == 'val' and epoch_acc > best_acc:
+                wandb.log({"val_loss": epoch_loss, "val_acc": epoch_acc})
+            print(f"{phase} Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}")
 
+            if phase == "val" and epoch_acc > best_acc:
                 best_acc = epoch_acc
                 best_model_wts = model.state_dict()
-                
 
     print(f"Best val Acc: {best_acc:.4f}")
     model.load_state_dict(best_model_wts)
@@ -114,18 +115,19 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
     # save_path = os.path.join(save_dir, f"{optimizer.__class__.__name__}_performance.png")
     # plot_performance(train_losses, val_losses, train_accs, val_accs, optimizer.__class__.__name__, save_path)
 
-    '''
+    """
     Upload the model to GCP cloud storage
-    '''
+    """
     project_root = os.path.abspath(os.path.join(os.path.dirname("__file__"), "../../"))
 
     bucket_name = "mlops-trained-models"  # 替换为你的存储桶名称
-    source_file_name =  os.path.join(project_root, "models/model.pth")  # 替换为模型文件的本地路径
+    source_file_name = os.path.join(project_root, "models/model.pth")  # 替换为模型文件的本地路径
     destination_blob_name = "models/model.pth"  # 替换为存储路径
-    key_file = os.path.join(project_root, "keys/cloud_storage_key.json")   # 服务账号密钥文件的路径
+    key_file = os.path.join(project_root, "keys/cloud_storage_key.json")  # 服务账号密钥文件的路径
     upload_to_gcp_bucket(bucket_name, source_file_name, destination_blob_name, key_file)
 
     return model
+
 
 # 上传到 GCP Cloud Storage
 def upload_to_gcp_bucket(bucket_name, source_file_name, destination_blob_name, key_file):
@@ -137,7 +139,7 @@ def upload_to_gcp_bucket(bucket_name, source_file_name, destination_blob_name, k
     :param key_file: 服务账号的密钥文件路径。
     """
     # 设置 Google Cloud 的认证环境变量
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = key_file
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = key_file
 
     # 初始化存储客户端
     storage_client = storage.Client()
@@ -147,6 +149,7 @@ def upload_to_gcp_bucket(bucket_name, source_file_name, destination_blob_name, k
     # 上传文件
     blob.upload_from_filename(source_file_name)
     print(f"File {source_file_name} uploaded to {destination_blob_name}.")
+
 
 @app.command()
 def entrypoint(epoch: int = 2):
