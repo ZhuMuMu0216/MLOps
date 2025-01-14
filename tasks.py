@@ -5,6 +5,7 @@ WINDOWS = os.name == "nt"
 PROJECT_NAME = "mlops_project"
 PYTHON_VERSION = "3.10.16"
 
+
 # Setup commands
 @task
 def create_environment(ctx: Context) -> None:
@@ -34,12 +35,14 @@ def dev_requirements(ctx: Context) -> None:
 
 
 @task
-def train(ctx: Context, epoch: int = 10) -> None:
+def train(ctx: Context, epoch: int = 3) -> None:
     """Train model."""
     python_cmd = "python" if WINDOWS else "python3"
     base_command = f"{python_cmd} src/{PROJECT_NAME}/train.py entrypoint --epoch {epoch}"
-    
+
     ctx.run(base_command, echo=True, pty=not WINDOWS)
+
+
 # Use command
 # invoke train --epochs '2'
 
@@ -51,12 +54,14 @@ def test(ctx: Context) -> None:
     ctx.run(f"{python_cmd} -m coverage run -m pytest tests/", echo=True, pty=not WINDOWS)
     ctx.run(f"{python_cmd} -m coverage report -m", echo=True, pty=not WINDOWS)
 
+
 @task
 def git(ctx, message):
-    '''git add, commit and push'''
-    ctx.run(f"git add .")
+    """git add, commit and push"""
+    ctx.run("git add .")
     ctx.run(f"git commit -m '{message}'")
-    ctx.run(f"git push")
+    ctx.run("git push")
+
 
 @task
 def docker_build(ctx: Context, progress: str = "plain") -> None:
@@ -73,9 +78,10 @@ def docker_build(ctx: Context, progress: str = "plain") -> None:
         pty=not WINDOWS,
     )
 
+
 @task
 def pull_data(ctx):
-    '''Pull data from remote storage'''
+    """Pull data from remote storage"""
     ctx.run("dvc pull")
 
 
@@ -84,7 +90,6 @@ def pull_data(ctx):
 def build_docs(ctx: Context) -> None:
     """Build documentation."""
     ctx.run("mkdocs build --config-file docs/mkdocs.yaml --site-dir build", echo=True, pty=not WINDOWS)
-
 
 
 @task(dev_requirements)

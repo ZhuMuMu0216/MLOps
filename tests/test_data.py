@@ -4,8 +4,8 @@ from torchvision.transforms import Compose, Resize, ToTensor, Normalize
 from src.mlops_project.data import HotdogNotHotdog, get_dataloaders
 
 # Define global test parameters
-PARENT_DIR = os.path.join(os.path.dirname(__file__), os.pardir) # Return the parent directory of the current file
-DATA_PATH = os.path.join(PARENT_DIR, "data") # Make it work on Unix and Windows
+PARENT_DIR = os.path.join(os.path.dirname(__file__), os.pardir)  # Return the parent directory of the current file
+DATA_PATH = os.path.join(PARENT_DIR, "data")  # Make it work on Unix and Windows
 BATCH_SIZE = 4
 TRANSFORM = Compose([Resize((128, 128)), ToTensor(), Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])])
 

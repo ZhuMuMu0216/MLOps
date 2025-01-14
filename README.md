@@ -6,7 +6,7 @@ This repository is for the project of course: [DTU-MLOps](https://skaftenicki.gi
 
 For this project, we will leverage the dataset available on Kaggle: [Hotdog-NotHotdog](https://www.kaggle.com/datasets/thedatasith/hotdog-nothotdog). This dataset provides labeled images of hotdogs and non-hotdogs, and it has already been split into training set and test set, which makes it an ideal candidate for training and evaluating a supervised deep learning model. While the dataset’s size and diversity will influence the model’s performance, basic preprocessing steps, such as resizing images to a fixed size (e.g., 128x128), normalizing pixel values, and data augmentation (e.g., rotations, flips), will be applied to increase model robustness. We will utilize transfer learning by initializing ResNet18 with pre-trained weights on ImageNet, fine-tuning it for the hotdog classification task.
 
-1. The deep learning framework chosen for this project is [PyTorch](https://github.com/huggingface/pytorch-image-models), known for its flexibility and ease of use in implementing neural networks. PyTorch provides comprehensive libraries and tools for training, validation, and visualization, making it the ideal choice for this image classification task. 
+1. The deep learning framework chosen for this project is [PyTorch](https://github.com/huggingface/pytorch-image-models), known for its flexibility and ease of use in implementing neural networks. PyTorch provides comprehensive libraries and tools for training, validation, and visualization, making it the ideal choice for this image classification task.
 
 2. The neural network architecture we will employ is [ResNet](https://arxiv.org/pdf/1512.03385) which is proposed by Kaiming in 2016, known for its effectiveness in extracting features from images due to its residual connections, which alleviate the vanishing gradient problem in deep networks.
 
@@ -22,7 +22,7 @@ During the whole project, we will focuses on getting organized and be familiar w
 
 5. We use [Unit testing](https://skaftenicki.github.io/dtu_mlops/s5_continuous_integration/unittesting/) to test individual parts of your code base to test for correctness. Besides, we use the [GitHub actions](https://skaftenicki.github.io/dtu_mlops/s5_continuous_integration/github_actions/) to automate the testing, such that it is done every time we push to our repository. If we combine this with only pushing to branches and then only merging these branches whenever all automated testing has passed, our code should be fairly safe against bugs.
 
-6. We use the [GCP](https://cloud.google.com/storage?utm_source=google&utm_medium=cpc&utm_campaign=emea-dk-all-en-dr-bkws-all-all-trial-b-gcp-1707574&utm_content=text-ad-none-any-dev_c-cre_677656980141-adgp_Hybrid+%7C+BKWS+-+MIX+%7C+Txt+-+Storage+-+Cloud+Storage-kwid_43700078358185205-kwd-298160887431-userloc_1005023&utm_term=kw_cloud+google+storage-net_g-plac_&&gad_source=1&gclid=CjwKCAiAhP67BhAVEiwA2E_9g7MwNmFWBQitjl6x7d70GodgOTlA5IIRxzQz1P-SJ_g2eSfNHLzFmhoCvzAQAvD_BwE&gclsrc=aw.ds&hl=en) to build our remote virtual machine, storage our dataset, make CI/CD and use the Vertex AI to 
+6. We use the [GCP](https://cloud.google.com/storage?utm_source=google&utm_medium=cpc&utm_campaign=emea-dk-all-en-dr-bkws-all-all-trial-b-gcp-1707574&utm_content=text-ad-none-any-dev_c-cre_677656980141-adgp_Hybrid+%7C+BKWS+-+MIX+%7C+Txt+-+Storage+-+Cloud+Storage-kwid_43700078358185205-kwd-298160887431-userloc_1005023&utm_term=kw_cloud+google+storage-net_g-plac_&&gad_source=1&gclid=CjwKCAiAhP67BhAVEiwA2E_9g7MwNmFWBQitjl6x7d70GodgOTlA5IIRxzQz1P-SJ_g2eSfNHLzFmhoCvzAQAvD_BwE&gclsrc=aw.ds&hl=en) to build our remote virtual machine, storage our dataset, make CI/CD and use the Vertex AI to
 train our model. It's really a powerful platform made by Google.
 
 7. Deployment(Haven't learned this yet)
@@ -76,7 +76,7 @@ train our model. It's really a powerful platform made by Google.
     | REPOSITORY  | TAG    | IMAGE ID      | CREATED        | SIZE  |
     |-------------|--------|---------------|----------------|-------|
     | train_image | latest | 311535037766  | 8 minutes ago  | 6.24GB |
-4. As we didn't COPY the data into our docker image, we dynamically mount the Host's `data` Directory to the Container's `/data`. 
+4. As we didn't COPY the data into our docker image, we dynamically mount the Host's `data` Directory to the Container's `/data`.
     ```bash
     '''In Linux system'''
     docker run -v $(pwd)/data:/data -it my_image
@@ -86,4 +86,4 @@ train our model. It's really a powerful platform made by Google.
 
 5. We can run the docker image right now.
     ```bash
-    docker run -v ${PWD}/data:/data -it train_image 
+    docker run -v ${PWD}/data:/data -it train_image
