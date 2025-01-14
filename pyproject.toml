@@ -7,23 +7,16 @@ name = "mlops_project"
 version = "0.0.1"
 description = "None"
 authors = [
-  { name = "Lin zhu, Boyang Xu, Wenji Xie", email = "your@email.com" },
+    { name = "Lin zhu, Boyang Xu, Wenji Xie", email = "your@email.com" },
 ]
 license = { file = "LICENSE" }
 keywords = ["machine learning", "MLOps"]
 classifiers = [
-  "Development Status :: 3 - Alpha",
-  "Programming Language :: Python :: 3",
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
 ]
 readme = "README.md"
-requires-python = ">=3.10"
-dynamic = ["dependencies", "optional-dependencies"]
-
-[tool.setuptools.dynamic]
-dependencies = {file = ["requirements.txt"]}
-
-[tool.setuptools.dynamic.optional-dependencies]
-dev = {file = ['requirements_dev.txt']}
+requires-python = ">=3.11"
 
 [tool.ruff]
 line-length = 120
