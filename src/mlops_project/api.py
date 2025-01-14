@@ -1,18 +1,15 @@
 import os
 import shutil
-from fastapi import FastAPI, UploadFile, File, HTTPException
-from contextlib import asynccontextmanager
+import io
+import torch
+import torchvision.transforms as transforms
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
 from PIL import Image
-import torch
-import torchvision.transforms as transforms
 from google.cloud import storage
-import io
 from model import ResNet18
 
-# 全局模型变量
 model = None
 tempfile_dir = "temp"
 
@@ -26,7 +23,7 @@ async def lifespan(app: FastAPI):
     global model
     try:
         print("download model from gcs")
-        model = download_model_from_gcs()
+        model = download_model_from_gcs_and_load()
         yield
     finally:
         print("Application closing...")
@@ -53,49 +50,21 @@ def root():
 
 @app.post("/predict")
 async def predict(data: UploadFile = File(...)):
-    # 定义固定的文件路径
-    input_file_path = os.path.join(tempfile_dir, "uploaded_image.jpg")
-
-    # 验证文件类型是否为图片
+    # validate the file format
     if not data.filename.lower().endswith(('.jpg', '.jpeg', '.png')):
         raise HTTPException(status_code=400, detail="Invalid file format. Only JPG and PNG images are supported.")
 
-    # 保存上传文件到本地
-    with open(input_file_path, 'wb') as input_file:
-        content = await data.read()
-        input_file.write(content)
+    if model is None:
+        raise HTTPException(status_code=503, detail="Model is not loaded. Please try again later.")
 
-    res, prob = process_image(input_file_path)
-
-    response = {
-        "result": f"classification result: {res}, probability: {prob}",
-    }
-    return response
+    # Read the image
+    image_bytes = await data.read()
+    image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
 
     try:
-        # 确保模型已加载
-        if model is None:
-            raise HTTPException(status_code=503, detail="Model is not loaded. Please try again later.")
-
-        """
-        Read the image
-        """
-        image_bytes = await file.read()
-        image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
-
-        """
-        process the image and make predictions
-        """
-        input_tensor = preprocess_image(image)
-        with torch.no_grad():
-            outputs = model(input_tensor)
-            probs = torch.sigmoid(outputs).squeeze().item()
-        category = "hotdog" if probs > 0.5 else "not hotdog"
-
-        return JSONResponse({"probabilities": float(probs), "category": category})
-
-    except HTTPException as he:
-        raise he
+        # process the image and make predictions
+        category, probs = process_image(image)
+        return JSONResponse({"category": category, "probabilities": float(probs)})
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing image: {str(e)}")
 
@@ -107,17 +76,22 @@ async def health_check():
         raise HTTPException(status_code=503, detail="Model not loaded")
     return {"status": "healthy", "model_loaded": True}
 
-# TODO
-def process_image(input_file_path):
-    return "hotdog", 0.95
 
-# 从 GCP 下载模型
-def download_model_from_gcs():
+def process_image(image):
+    input_tensor = preprocess_image(image)
+    with torch.no_grad():
+        outputs = model(input_tensor)
+        probs = torch.sigmoid(outputs).squeeze().item()
+    category = "hotdog" if probs > 0.5 else "not hotdog"
+    return category, probs
+
+
+# download trained model from GCP
+def download_model_from_gcs_and_load():
     try:
         storage_client = storage.Client()
         bucket = storage_client.bucket("mlops-trained-models")
         blob = bucket.blob("models/model.pth")
-
         blob.download_to_filename("model.pth")
 
         model = ResNet18()
@@ -127,7 +101,8 @@ def download_model_from_gcs():
     except Exception as e:
         raise RuntimeError(f"Failed to load model: {str(e)}")
 
-# 图像预处理
+
+# image preprocessing
 def preprocess_image(image: Image.Image):
     transform = transforms.Compose(
         [
