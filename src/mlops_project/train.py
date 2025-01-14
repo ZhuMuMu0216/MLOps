@@ -2,7 +2,7 @@ import torch
 import copy
 import os
 import torchvision.transforms as transforms
-from visualize import plot_performance, save_to_excel
+from visualize import plot_performance
 from data import get_dataloaders
 from model import ResNet18
 import wandb
@@ -22,16 +22,13 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
         test_loader (DataLoader): DataLoader for the test dataset.
         optimizer (torch.optim.Optimizer): Optimizer to use for training.
         num_epochs (int): Number of epochs to train the model.
-    
+
     Returns:
         model (torch.nn.Module): Trained model.
         performance (dict): Dictionary containing performance metrics
     """
 
-
-
-    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
     initial_model = copy.deepcopy(model)
     criterion = torch.nn.BCEWithLogitsLoss()
@@ -98,11 +95,11 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
             else:
                 val_losses.append(epoch_loss)
                 val_accs.append(epoch_acc)
-                wandb.log({"val_loss": epoch_loss, "val_acc": epoch_acc})
-          
+                wandb.log({"val_loss": epoch_loss, "val_acc": epoch_acc})     
             print(f'{phase} Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}')
             
             if phase == 'val' and epoch_acc > best_acc:
+
                 best_acc = epoch_acc
                 best_model_wts = model.state_dict()
                 
@@ -169,30 +166,31 @@ def entrypoint(epoch: int = 2):
     wandb.init(
         # set the wandb project where this run will be logged
         project="my-awesome-project",
-
         # track hyperparameters and run metadata
         config={
-        "learning_rate": 0.001,
-        "architecture": "ResNet",
-        "dataset": "Hotdog/notHodog",
-        "epochs": epoch,
-        }
+            "learning_rate": 0.001,
+            "architecture": "ResNet",
+            "dataset": "Hotdog/notHodog",
+            "epochs": epoch,
+        },
     )
 
     # Local data path
-    data_path = os.path.normpath("data") 
-    transform = transforms.Compose([
-        transforms.Resize((128, 128)),            # Resize image to 128x128
-        transforms.ToTensor(),                   # Convert to tensor (CxHxW format)
-        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])  # Normalize to [-1, 1]
-    ])
+    data_path = os.path.normpath("data")
+    transform = transforms.Compose(
+        [
+            transforms.Resize((128, 128)),  # Resize image to 128x128
+            transforms.ToTensor(),  # Convert to tensor (CxHxW format)
+            transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),  # Normalize to [-1, 1]
+        ]
+    )
 
     # Get DataLoaders
     train_loader, test_loader = get_dataloaders(data_path, batch_size=4, transform=transform)
     # Load the model
     model = ResNet18(num_classes=1)
     # Define the optimizers
-    optimizers = torch.optim.Adam(model.parameters(), lr=0.001),
+    optimizers = (torch.optim.Adam(model.parameters(), lr=0.001),)
     num_epochs = epoch
     model_performances = {}
 

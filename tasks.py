@@ -5,6 +5,7 @@ WINDOWS = os.name == "nt"
 PROJECT_NAME = "mlops_project"
 PYTHON_VERSION = "3.10.16"
 
+
 # Setup commands
 @task
 def create_environment(ctx: Context) -> None:
@@ -44,6 +45,7 @@ def train(ctx: Context, epoch: int = 10) -> None:
 # invoke train --epochs '2'
 
 
+
 @task
 def test(ctx: Context) -> None:
     """Run tests."""
@@ -57,6 +59,7 @@ def git(ctx, message):
     ctx.run(f"git add .")
     ctx.run(f"git commit -m '{message}'")
     ctx.run(f"git push")
+
 
 @task
 def docker_build(ctx: Context, progress: str = "plain") -> None:
@@ -77,7 +80,6 @@ def docker_build(ctx: Context, progress: str = "plain") -> None:
 def pull_data(ctx):
     '''Pull data from remote storage'''
     ctx.run("dvc pull")
-
 
 # Documentation commands
 @task(dev_requirements)

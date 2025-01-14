@@ -183,5 +183,10 @@ data/train/
 # Prevent accidentally upload GCP service account key
 .dvc/mlops*.json
 
+vertex_ai/
+
+# ruff
+.ruff_cache/
 wandb/
 keys/*keys/*.json
+

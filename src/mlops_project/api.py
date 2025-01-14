@@ -124,3 +124,4 @@ async def health_check():
             detail="Model not loaded"
         )
     return {"status": "healthy", "model_loaded": True}
+
