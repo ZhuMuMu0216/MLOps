@@ -182,3 +182,9 @@ data/train/
 
 # Prevent accidentally upload GCP service account key
 .dvc/mlops*.json
+
+# Avoid hardcoding docker image path in vertex_ai/config.yaml
+vertex_ai/
+
+# ruff
+.ruff_cache/
