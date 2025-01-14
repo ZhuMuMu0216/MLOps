@@ -67,12 +67,12 @@ def get_dataloaders(data_path, batch_size=4, transform=None):
         test_loader (DataLoader): DataLoader for the testing dataset.
     """
     # Create training and testing datasets
-    train_dataset = HotdogNotHotdog(data_path=data_path, train=True, transform=transform, num_workers=1)
-    test_dataset = HotdogNotHotdog(data_path=data_path, train=False, transform=transform, num_workers=1)
+    train_dataset = HotdogNotHotdog(data_path=data_path, train=True, transform=transform)
+    test_dataset = HotdogNotHotdog(data_path=data_path, train=False, transform=transform)
 
     # Create DataLoaders
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=1)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=1)
 
     return train_loader, test_loader
 
