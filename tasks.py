@@ -35,7 +35,7 @@ def dev_requirements(ctx: Context) -> None:
 
 
 @task
-def train(ctx: Context, epoch: int = 10) -> None:
+def train(ctx: Context, epoch: int = 3) -> None:
     """Train model."""
     python_cmd = "python" if WINDOWS else "python3"
     base_command = f"{python_cmd} src/{PROJECT_NAME}/train.py entrypoint --epoch {epoch}"
