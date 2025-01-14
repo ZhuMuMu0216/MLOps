@@ -1,0 +1,7 @@
+typer==0.15.1
+fastapi==0.115.6
+uvicorn==0.34.0
+dvc-gdrive==3.0.1
+dvc==3.58.0
+dvc-gs==3.0.1
+python-multipart==0.0.20
