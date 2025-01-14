@@ -125,7 +125,7 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
     bucket_name = "mlops-trained-models"  # 替换为你的存储桶名称
     source_file_name =  os.path.join(project_root, "models/model.pth")  # 替换为模型文件的本地路径
     destination_blob_name = "models/model.pth"  # 替换为存储路径
-    key_file = os.path.join(project_root, "keys/mlops-groupwork-7a024d65ea13.json")   # 服务账号密钥文件的路径
+    key_file = os.path.join(project_root, "keys/cloud_storage_key.json")   # 服务账号密钥文件的路径
     upload_to_gcp_bucket(bucket_name, source_file_name, destination_blob_name, key_file)
 
     return model

@@ -12,7 +12,7 @@ COPY requirements_dev.txt requirements_dev.txt
 
 COPY models/ /models/
 COPY src/ /src/
-COPY keys/ /keys/
+# COPY keys/ /keys/
 
 WORKDIR /
 RUN pip install -r requirements.txt --no-cache-dir --verbose
