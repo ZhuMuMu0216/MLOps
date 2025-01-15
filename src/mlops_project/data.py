@@ -26,7 +26,11 @@ class HotdogNotHotdog(Dataset):
             class_dir = os.path.join(self.data_path, class_name)
             for img_file in os.listdir(class_dir):
                 if img_file.endswith(".jpg"):  # Process only .jpg files
-                    self.image_paths.append(os.path.join(class_dir, img_file))
+                    img_path = os.path.join(class_dir, img_file)
+                    image = Image.open(img_path).convert("RGB")  # Convert to RGB mode
+                    if self.transform:
+                        image = self.transform(image)
+                    self.image_paths.append(image)
                     self.labels.append(label)
 
     def __len__(self):
@@ -42,13 +46,8 @@ class HotdogNotHotdog(Dataset):
             image (torch.Tensor): Image data (CxHxW format)
             label (int): Corresponding label for the image
         """
-        # Load the image
-        image_path = self.image_paths[idx]
-        image = Image.open(image_path).convert("RGB")  # Convert to RGB mode
-
-        # Apply data augmentation/preprocessing
-        if self.transform:
-            image = self.transform(image)
+        # Get the preprocessed image
+        image = self.image_paths[idx]
 
         # Get the corresponding label
         label = self.labels[idx]
@@ -71,8 +70,8 @@ def get_dataloaders(data_path, batch_size=4, transform=None):
     test_dataset = HotdogNotHotdog(data_path=data_path, train=False, transform=transform)
 
     # Create DataLoaders
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=1)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=1)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=0)
 
     return train_loader, test_loader
 

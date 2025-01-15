@@ -189,3 +189,6 @@ vertex_ai/
 .ruff_cache/
 wandb/
 keys/*keys/*.json
+
+# Key file for GCP buckets
+keys/*.json
