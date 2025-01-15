@@ -188,5 +188,5 @@ vertex_ai/
 # ruff
 .ruff_cache/
 wandb/
-keys/*keys/*.json
+keys/*
 

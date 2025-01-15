@@ -83,7 +83,7 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
 
                     running_loss += loss.item() * inputs.size(0)
                     running_corrects += torch.sum(preds == labels.unsqueeze(1))
-                prof.export_chrome_trace("trace.json")
+            prof.export_chrome_trace("trace.json")
                 
             epoch_loss = running_loss / len(data_loader.dataset)
             epoch_acc = running_corrects.double() / len(data_loader.dataset)
