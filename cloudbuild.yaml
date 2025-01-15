@@ -47,8 +47,8 @@ steps:
       '--image=europe-west1-docker.pkg.dev/$PROJECT_ID/mlops-docker-repo/model-training',
       '--region=europe-west1',
       '--platform=managed',
-      '--service-account=trained-models@mlops-groupwork.iam.gserviceaccount.com'
-      '--allow-unauthenticated',
+      '--service-account=trained-models@mlops-groupwork.iam.gserviceaccount.com',
+      '--allow-unauthenticated'
     ]
     waitFor: [ 'Push docker image for model-training' ]
 
@@ -61,7 +61,7 @@ steps:
       '--image=europe-west1-docker.pkg.dev/$PROJECT_ID/mlops-docker-repo/api-service',
       '--region=europe-west1',
       '--platform=managed',
-      '--service-account=trained-models@mlops-groupwork.iam.gserviceaccount.com'
-      '--allow-unauthenticated',
+      '--service-account=trained-models@mlops-groupwork.iam.gserviceaccount.com',
+      '--allow-unauthenticated'
     ]
     waitFor: [ 'Push docker image for api-service' ]
