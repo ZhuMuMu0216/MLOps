@@ -128,7 +128,7 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
 
     print("Read to upload model to GCP cloud storage")
 
-    project_root = os.path.abspath(os.path.join(os.path.dirname("__file__"), "../../"))
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 
     bucket_name = "mlops-trained-models"  # 替换为你的存储桶名称
     source_file_name = os.path.join(project_root, "models/best_model.pth")  # 替换为模型文件的本地路径
