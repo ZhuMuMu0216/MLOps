@@ -35,9 +35,11 @@ async def lifespan(app: FastAPI):
         del model
 
 
-app = FastAPI(title="Image Classification API",
-              description="A REST API for hotdog/not-hotdog image classification",
-              lifespan=lifespan)
+app = FastAPI(
+    title="Image Classification API",
+    description="A REST API for hotdog/not-hotdog image classification",
+    lifespan=lifespan,
+)
 
 
 @app.get("/")
@@ -51,7 +53,7 @@ def root():
 @app.post("/predict")
 async def predict(data: UploadFile = File(...)):
     # validate the file format
-    if not data.filename.lower().endswith(('.jpg', '.jpeg', '.png')):
+    if not data.filename.lower().endswith((".jpg", ".jpeg", ".png")):
         raise HTTPException(status_code=400, detail="Invalid file format. Only JPG and PNG images are supported.")
 
     if model is None:
