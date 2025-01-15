@@ -6,7 +6,6 @@ from data import get_dataloaders
 from model import ResNet18
 import wandb
 import typer
-from torch.profiler import profile, ProfilerActivity
 from google.cloud import storage
 
 app = typer.Typer()
@@ -29,7 +28,8 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
         performance (dict): Dictionary containing performance metrics
     """
 
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cpu")
     model = model.to(device)
     initial_model = copy.deepcopy(model)
     criterion = torch.nn.BCEWithLogitsLoss()
@@ -51,6 +51,7 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
     train_accs = []
     val_accs = []
 
+    print("Ready to start training")
     for epoch in range(num_epochs):
         print(f"Epoch {epoch + 1}/{num_epochs}")
         print("-" * 20)
@@ -65,28 +66,31 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
 
             running_loss = 0.0
             running_corrects = 0
-            with profile(
-                activities=[ProfilerActivity.CPU], record_shapes=True
-            ) as prof:  # add ProfilerActivity.CUDA   if we use CUDA
-                for inputs, labels in data_loader:
-                    inputs = inputs.to(device)
-                    labels = labels.to(device)
+
+            # with profile(
+            #     activities=[ProfilerActivity.CPU], record_shapes=True
+            # ) as prof:  # add ProfilerActivity.CUDA   if we use CUDA
+
+            # prof.export_chrome_trace("trace.json")
+
+            for inputs, labels in data_loader:
+                inputs = inputs.to(device)
+                labels = labels.to(device)
+
+                if phase == "train":
+                    optimizer.zero_grad()
+
+                with torch.set_grad_enabled(phase == "train"):
+                    outputs = model(inputs)
+                    preds = (torch.sigmoid(outputs) > 0.5).float()
+                    loss = criterion(outputs, labels.unsqueeze(1).float())
 
                     if phase == "train":
-                        optimizer.zero_grad()
+                        loss.backward()
+                        optimizer.step()
 
-                    with torch.set_grad_enabled(phase == "train"):
-                        outputs = model(inputs)
-                        preds = (torch.sigmoid(outputs) > 0.5).float()
-                        loss = criterion(outputs, labels.unsqueeze(1).float())
-
-                        if phase == "train":
-                            loss.backward()
-                            optimizer.step()
-
-                    running_loss += loss.item() * inputs.size(0)
-                    running_corrects += torch.sum(preds == labels.unsqueeze(1))
-                prof.export_chrome_trace("trace.json")
+                running_loss += loss.item() * inputs.size(0)
+                running_corrects += torch.sum(preds == labels.unsqueeze(1))
 
             epoch_loss = running_loss / len(data_loader.dataset)
             epoch_acc = running_corrects.double() / len(data_loader.dataset)
@@ -104,9 +108,12 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
             if phase == "val" and epoch_acc > best_acc:
                 best_acc = epoch_acc
                 best_model_wts = model.state_dict()
+        print(f"Passed epoch {epoch}")
 
     print(f"Best val Acc: {best_acc:.4f}")
     model.load_state_dict(best_model_wts)
+
+    print("Read to save model weights")
 
     # save the best model weights
     torch.save(best_model_wts, "models/best_model.pth")
@@ -118,15 +125,25 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
     """
     Upload the model to GCP cloud storage
     """
+
+    print("Read to upload model to GCP cloud storage")
+
     project_root = os.path.abspath(os.path.join(os.path.dirname("__file__"), "../../"))
 
     bucket_name = "mlops-trained-models"  # 替换为你的存储桶名称
-    source_file_name = os.path.join(project_root, "models/model.pth")  # 替换为模型文件的本地路径
+    source_file_name = os.path.join(project_root, "models/best_model.pth")  # 替换为模型文件的本地路径
     destination_blob_name = "models/model.pth"  # 替换为存储路径
     key_file = os.path.join(project_root, "keys/cloud_storage_key.json")  # 服务账号密钥文件的路径
     upload_to_gcp_bucket(bucket_name, source_file_name, destination_blob_name, key_file)
 
-    return model
+    performance = {
+        "train_loss": train_losses,
+        "val_loss": val_losses,
+        "train_acc": train_accs,
+        "val_acc": val_accs,
+    }
+
+    return model, performance
 
 
 # 上传到 GCP Cloud Storage
