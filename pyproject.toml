@@ -17,7 +17,10 @@ classifiers = [
 ]
 readme = "README.md"
 requires-python = ">=3.11"
-dynamic = ["optional-dependencies"]
+dynamic = ["dependencies", "optional-dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
 
 [tool.setuptools.dynamic.optional-dependencies]
 dev = { file = ['requirements_dev.txt'] }

@@ -38,6 +38,23 @@ jobs:
       - name: Download datasets
         run: dvc pull -v --force
 
+      - name: Check working directory path
+        run: pwd
+
+      - name: Check working directory
+        run: ls -la
+
+      - name: Check data folder
+        run: ls -la data
+
+      # Upload datasets to the shared folder so the latter build step can download and use the data
+      - name: Upload data folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: data
+          path: data/
+          retention-days: 1
+
       - name: Run tests & coverage
         run: |
           coverage run -m pytest tests/
@@ -51,6 +68,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # download datasets from the shared folder
+      - name: Download data folder
+        uses: actions/download-artifact@v4
+        with:
+          name: data
+          path: data/
+
+      - name: Check working directory path
+        run: pwd
+
+      - name: Check working directory
+        run: ls -la
+
+      - name: Check data folder
+        run: ls -la data
+
       - name: Auth with GCP
         uses: google-github-actions/auth@v2
         with:
@@ -63,9 +96,8 @@ jobs:
           mkdir -p keys
           echo "$CLOUD_STORAGE_TRAINED_MODELS" > keys/cloud_storage_key.json
 
-
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
       - name: Submit build
-        run: gcloud builds submit --polling-interval=5 --region=europe-west1 --config cloudbuild.yaml --gcs-log-dir=gs://mlops-groupwork_cloudbuild/logs
+        run: gcloud builds submit --polling-interval=5 --region=europe-west1 --config cloud_build_and_deploy.yaml --gcs-log-dir=gs://mlops-groupwork_cloudbuild/logs

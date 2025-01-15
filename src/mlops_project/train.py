@@ -1,12 +1,12 @@
 import torch
 import copy
 import os
-import torchvision.transforms as transforms
-from data import get_dataloaders
-from model import ResNet18
 import wandb
 import typer
+import torchvision.transforms as transforms
 from google.cloud import storage
+from data import get_dataloaders
+from model import ResNet18
 
 app = typer.Typer()
 
