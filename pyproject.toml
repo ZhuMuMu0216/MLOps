@@ -16,14 +16,11 @@ classifiers = [
     "Programming Language :: Python :: 3",
 ]
 readme = "README.md"
-requires-python = ">=3.10"
-dynamic = ["dependencies", "optional-dependencies"]
-
-[tool.setuptools.dynamic]
-dependencies = {file = ["requirements.txt"]}
+requires-python = ">=3.11"
+dynamic = ["optional-dependencies"]
 
 [tool.setuptools.dynamic.optional-dependencies]
-dev = {file = ['requirements_dev.txt']}
+dev = { file = ['requirements_dev.txt'] }
 
 [tool.ruff]
 line-length = 120
