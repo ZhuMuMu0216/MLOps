@@ -3,6 +3,7 @@ typer==0.15.1
 fastapi==0.115.6
 uvicorn==0.34.0
 pillow==11.0.0
+numpy==1.26.4
 torchvision==0.20.1
 dvc-gdrive==3.0.1
 dvc==3.58.0
