@@ -192,3 +192,4 @@ keys/*keys/*.json
 
 # Key file for GCP buckets
 keys/*.json
+src/mlops_project/wandb/
