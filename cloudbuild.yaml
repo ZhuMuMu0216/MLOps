@@ -1,6 +1,6 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    id: 'Build docker image for model training'
+    id: 'Build docker image for model-training'
     args: [
       'build',
       '.',
@@ -11,29 +11,57 @@ steps:
     ]
 
   - name: 'gcr.io/cloud-builders/docker'
-    id: 'Build docker image for inference service'
+    id: 'Build docker image for api-service'
     args: [
       'build',
       '.',
       '-t',
-      'europe-west1-docker.pkg.dev/$PROJECT_ID/mlops-docker-repo/inference_service',
+      'europe-west1-docker.pkg.dev/$PROJECT_ID/mlops-docker-repo/api-service',
       '-f',
       'dockerfiles/api.dockerfile'
     ]
     waitFor: [ '-' ]
 
   - name: 'gcr.io/cloud-builders/docker'
-    id: 'Push docker image for model training'
+    id: 'Push docker image for model-training'
     args: [
       'push',
       'europe-west1-docker.pkg.dev/$PROJECT_ID/mlops-docker-repo/model-training'
     ]
-    waitFor: [ 'Build docker image for model training' ]
+    waitFor: [ 'Build docker image for model-training' ]
 
   - name: 'gcr.io/cloud-builders/docker'
-    id: 'Push docker image for inference service'
+    id: 'Push docker image for api-service'
     args: [
       'push',
-      'europe-west1-docker.pkg.dev/$PROJECT_ID/mlops-docker-repo/inference_service'
+      'europe-west1-docker.pkg.dev/$PROJECT_ID/mlops-docker-repo/api-service'
     ]
-    waitFor: [ 'Build docker image for inference service' ]
+    waitFor: [ 'Build docker image for api-service' ]
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Deploy model-training to Cloud Run'
+    args: [
+      'run',
+      'deploy',
+      'model-training',
+      '--image=europe-west1-docker.pkg.dev/$PROJECT_ID/mlops-docker-repo/model-training',
+      '--region=europe-west1',
+      '--platform=managed',
+      '--service-account=trained-models@mlops-groupwork.iam.gserviceaccount.com'
+      '--allow-unauthenticated',
+    ]
+    waitFor: [ 'Push docker image for model-training' ]
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Deploy api-service to Cloud Run'
+    args: [
+      'run',
+      'deploy',
+      'api-service',
+      '--image=europe-west1-docker.pkg.dev/$PROJECT_ID/mlops-docker-repo/api-service',
+      '--region=europe-west1',
+      '--platform=managed',
+      '--service-account=trained-models@mlops-groupwork.iam.gserviceaccount.com'
+      '--allow-unauthenticated',
+    ]
+    waitFor: [ 'Push docker image for api-service' ]
