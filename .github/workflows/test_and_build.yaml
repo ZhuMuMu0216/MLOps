@@ -55,6 +55,13 @@ jobs:
           path: data/
           retention-days: 1
 
+      - name: transfer github secret to file
+        env:
+          CLOUD_STORAGE_TRAINED_MODELS: ${{ secrets.CLOUD_STORAGE_TRAINED_MODELS }}
+        run: |
+          mkdir -p keys
+          echo "$CLOUD_STORAGE_TRAINED_MODELS" > keys/cloud_storage_key.json
+
       - name: Run tests & coverage
         run: |
           coverage run -m pytest tests/
