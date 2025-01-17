@@ -9,6 +9,7 @@ pytest==7.4.3
 coverage==7.6.9
 httpx==0.28.1
 locust==2.32.6
+python-multipart==0.0.20
 
 # linting
 ruff==0.1.3
