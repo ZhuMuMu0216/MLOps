@@ -91,11 +91,16 @@ def process_image(image):
 # download trained model from GCP
 def download_model_from_gcs_and_load():
     try:
+        # download trained model from GCS
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+        key_file = os.path.join(project_root, "keys/cloud_storage_key.json")
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = key_file
         storage_client = storage.Client()
         bucket = storage_client.bucket("mlops-trained-models")
         blob = bucket.blob("models/model.pth")
         blob.download_to_filename("model.pth")
 
+        # load the trained model
         model = ResNet18()
         model.load_state_dict(torch.load("model.pth"))
         model.eval()
