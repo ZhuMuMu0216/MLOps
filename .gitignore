@@ -199,3 +199,5 @@ keys/*.json
 /.idea/inspectionProfiles/profiles_settings.xml
 /.idea/inspectionProfiles/Project_Default.xml
 /.idea/vcs.xml
+models/model.pth
+optimizer_performance_plots/Adam_performance.png
