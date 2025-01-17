@@ -8,7 +8,7 @@ from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
 from PIL import Image
 from google.cloud import storage
-from model import ResNet18
+from mlops_project.model import ResNet18
 
 model = None
 tempfile_dir = "temp"
