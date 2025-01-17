@@ -20,7 +20,6 @@ class HotdogNotHotdog(Dataset):
 
         # Get the names of all subfolders (e.g., hotdog, not_hotdog) as class names
         self.class_to_label = {cls_name: idx for idx, cls_name in enumerate(os.listdir(self.data_path))}
-
         # Traverse each subfolder to retrieve file paths and corresponding labels
         for class_name, label in self.class_to_label.items():
             class_dir = os.path.join(self.data_path, class_name)
@@ -79,7 +78,7 @@ def get_dataloaders(data_path, batch_size=4, transform=None):
 if __name__ == "__main__":
     # Local data path
     # Normalize data_path for cross-platform compatibility
-    data_path = os.path.normpath("/data")  # Automatically adjusts path for current OS
+    data_path = os.path.normpath("data")  # Automatically adjusts path for current OS
 
     transform = transforms.Compose(
         [

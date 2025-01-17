@@ -84,8 +84,8 @@ def process_image(image):
     with torch.no_grad():
         outputs = model(input_tensor)
         probs = torch.sigmoid(outputs).squeeze().item()
-    category = "hotdog" if probs > 0.5 else "not hotdog"
-    return category, probs
+    category = "hotdog" if probs < 0.5 else "not hotdog"
+    return category, 1-probs
 
 
 # download trained model from GCP
