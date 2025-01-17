@@ -1,0 +1,74 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Build docker image for model-training'
+    args: [
+      'build',
+      '.',
+      '-t',
+      'europe-west1-docker.pkg.dev/$PROJECT_ID/mlops-docker-repo/model-training',
+      '-f',
+      'dockerfiles/train.dockerfile'
+    ]
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Build docker image for api-service'
+    args: [
+      'build',
+      '.',
+      '-t',
+      'europe-west1-docker.pkg.dev/$PROJECT_ID/mlops-docker-repo/api-service',
+      '-f',
+      'dockerfiles/api.dockerfile'
+    ]
+    waitFor: [ '-' ]
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Push docker image for model-training'
+    args: [
+      'push',
+      'europe-west1-docker.pkg.dev/$PROJECT_ID/mlops-docker-repo/model-training'
+    ]
+    waitFor: [ 'Build docker image for model-training' ]
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Push docker image for api-service'
+    args: [
+      'push',
+      'europe-west1-docker.pkg.dev/$PROJECT_ID/mlops-docker-repo/api-service'
+    ]
+    waitFor: [ 'Build docker image for api-service' ]
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Deploy model-training to Cloud Run Jobs'
+    args: [
+      'run',
+      'jobs',
+      'update',
+      'model-training',
+      '--image=europe-west1-docker.pkg.dev/$PROJECT_ID/mlops-docker-repo/model-training',
+      '--memory=4Gi',
+      '--cpu=4',
+      '--region=europe-west1',
+      '--service-account=train-and-inference@mlops-groupwork.iam.gserviceaccount.com',
+      '--task-timeout=1h',
+      '--project=$PROJECT_ID',
+      '--command=python',
+      '--args="-u,src/$PROJECT_ID/train.py,entrypoint"'
+    ]
+    waitFor: [ 'Push docker image for model-training' ]
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Deploy api-service to Cloud Run Services'
+    args: [
+      'run',
+      'deploy',
+      'api-service',
+      '--image=europe-west1-docker.pkg.dev/$PROJECT_ID/mlops-docker-repo/api-service',
+      '--memory=4Gi',
+      '--cpu=2',
+      '--region=europe-west1',
+      '--platform=managed',
+      '--service-account=train-and-inference@mlops-groupwork.iam.gserviceaccount.com',
+      '--allow-unauthenticated'
+    ]
+    waitFor: [ 'Push docker image for api-service' ]

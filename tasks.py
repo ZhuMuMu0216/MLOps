@@ -3,7 +3,7 @@ from invoke import Context, task
 
 WINDOWS = os.name == "nt"
 PROJECT_NAME = "mlops_project"
-PYTHON_VERSION = "3.10.16"
+PYTHON_VERSION = "3.11"
 
 
 # Setup commands
@@ -35,7 +35,7 @@ def dev_requirements(ctx: Context) -> None:
 
 
 @task
-def train(ctx: Context, epoch: int = 3) -> None:
+def train(ctx: Context, epoch: int = 2) -> None:
     """Train model."""
     python_cmd = "python" if WINDOWS else "python3"
     base_command = f"{python_cmd} src/{PROJECT_NAME}/train.py entrypoint --epoch {epoch}"
