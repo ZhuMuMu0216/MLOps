@@ -15,5 +15,5 @@ class MyUser(HttpUser):
     def post_predict(self) -> None:
         """A task that simulates a user uploads an image file and invoke the inference endpoint."""
         # We hardcoded the image file since it won't really affect the test result
-        with open("data\\test\\nothotdog\\food (1).jpg", "rb") as file:
+        with open("data/test/nothotdog/food (1).jpg", "rb") as file:
             self.client.post("/predict", files={"data": file})
