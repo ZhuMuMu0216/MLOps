@@ -76,7 +76,7 @@ async def predict(data: UploadFile = File(...)):
 
 @app.get("/health")
 async def health_check():
-    """健康检查端点"""
+    """check the health of the service"""
     if model is None:
         raise HTTPException(status_code=503, detail="Model not loaded")
     return {"status": "healthy", "model_loaded": True}
@@ -124,11 +124,11 @@ def save_prediction_to_gcp(input_features, outputs, category: str):
 
     # Prepare prediction data
     data = {
-        "avg_brightness": input_features[0],
-        "contrast": input_features[1],
-        "sharpness": input_features[2],
+        "avg_brightness": float(input_features[0]),
+        "contrast": float(input_features[1]),
+        "sharpness": float(input_features[2]),
         "category": category,
-        "probability": outputs,
+        "probability": float(outputs),
         "timestamp": datetime.datetime.now(tz=datetime.UTC).isoformat(),
     }
     blob = bucket.blob(f"prediction_{time}.json")
