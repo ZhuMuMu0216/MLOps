@@ -17,7 +17,7 @@ RUN curl https://sh.rustup.rs -sSf | bash -s -- -y && \
 
 # 这里显式将 cargo bin 路径写入环境变量
 ENV PATH="/root/.cargo/bin:$PATH"
-    
+
 WORKDIR /MLOps/
 
 COPY models models
