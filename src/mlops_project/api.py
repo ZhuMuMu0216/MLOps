@@ -4,11 +4,14 @@ import io
 import torch
 import torchvision.transforms as transforms
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse
 from PIL import Image
 from google.cloud import storage
 from model import ResNet18
+import numpy as np
+import datetime
+import json
 
 model = None
 tempfile_dir = "temp"
@@ -81,12 +84,53 @@ async def health_check():
 
 def process_image(image):
     input_tensor = preprocess_image(image)
+    input_features = extract_features(image)
+
     with torch.no_grad():
         outputs = model(input_tensor)
+        
         probs = torch.sigmoid(outputs).squeeze().item()
     category = "hotdog" if probs < 0.5 else "not hotdog"
+    save_prediction_to_gcp(input_features, 1-probs, category)
+
     return category, 1-probs
 
+def extract_features(img):
+    """
+    Extract basic image features from a single image.
+    """
+    transform = transforms.Compose(
+        [
+            transforms.Resize((128, 128)),  # Resize image to 128x128
+            transforms.ToTensor(),  # Convert to tensor (CxHxW format)
+        ]
+    )
+    image_tensor = transform(img)
+    input_numpy = image_tensor.numpy()  # Convert to NumPy
+    avg_brightness = np.mean(input_numpy)  # Compute the average pixel intensity (brightness)
+    contrast = np.std(input_numpy)  # Compute the standard deviation of pixel values (contrast)
+    sharpness = np.mean(np.abs(np.gradient(input_numpy)))  # Compute the mean gradient magnitude (sharpness)
+    return np.array([avg_brightness, contrast, sharpness])  # Return features as a NumPy array
+
+# Save prediction results to GCP
+def save_prediction_to_gcp(input_features, outputs, category: str):
+    """Save the prediction results to GCP bucket."""
+    client = storage.Client()
+    bucket = client.bucket("mlops-trained-models")
+    time = datetime.datetime.now(tz=datetime.UTC)
+
+    # Prepare prediction data
+    data = {
+        "avg_brightness": input_features[0],
+        "contrast": input_features[1],
+        "sharpness": input_features[2],
+        "category": category,
+        "probability": outputs,
+        "timestamp": datetime.datetime.now(tz=datetime.UTC).isoformat(),
+    }
+    blob = bucket.blob(f"prediction_{time}.json")
+    blob.upload_from_string(json.dumps(data))
+    print("Prediction saved to GCP bucket.")
 
 # download trained model from GCP
 def download_model_from_gcs_and_load():
@@ -121,3 +165,4 @@ def preprocess_image(image: Image.Image):
 
     image_tensor = transform(image)
     return image_tensor.unsqueeze(0)
+
