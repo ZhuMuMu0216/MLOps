@@ -96,6 +96,7 @@ def process_image(image):
 
     return category, 1-probs
 
+
 def extract_features(img):
     """
     Extract basic image features from a single image.
