@@ -1,6 +1,6 @@
-'''
+"""
 This image_drift.py is only applied in the local test
-'''
+"""
 
 import numpy as np
 import pandas as pd

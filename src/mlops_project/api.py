@@ -4,7 +4,7 @@ import io
 import torch
 import torchvision.transforms as transforms
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, File, UploadFile, HTTPException, BackgroundTasks
+from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
 from PIL import Image
 from google.cloud import storage
@@ -88,13 +88,14 @@ def process_image(image):
 
     with torch.no_grad():
         outputs = model(input_tensor)
-        
+
         probs = torch.sigmoid(outputs).squeeze().item()
     category = "hotdog" if probs < 0.5 else "not hotdog"
 
-    save_prediction_to_gcp(input_features, 1-probs, category)
+    save_prediction_to_gcp(input_features, 1 - probs, category)
 
-    return category, 1-probs
+    return category, 1 - probs
+
 
 def extract_features(img):
     """
@@ -112,6 +113,7 @@ def extract_features(img):
     contrast = np.std(input_numpy)  # Compute the standard deviation of pixel values (contrast)
     sharpness = np.mean(np.abs(np.gradient(input_numpy)))  # Compute the mean gradient magnitude (sharpness)
     return np.array([avg_brightness, contrast, sharpness])  # Return features as a NumPy array
+
 
 # Save prediction results to GCP
 def save_prediction_to_gcp(input_features, outputs, category: str):
@@ -132,6 +134,7 @@ def save_prediction_to_gcp(input_features, outputs, category: str):
     blob = bucket.blob(f"prediction_{time}.json")
     blob.upload_from_string(json.dumps(data))
     print("Prediction saved to GCP bucket.")
+
 
 # download trained model from GCP
 def download_model_from_gcs_and_load():
@@ -166,4 +169,3 @@ def preprocess_image(image: Image.Image):
 
     image_tensor = transform(image)
     return image_tensor.unsqueeze(0)
-
