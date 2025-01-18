@@ -10,3 +10,4 @@ dvc==3.58.0
 dvc-gs==3.0.1
 python-multipart==0.0.20
 google-cloud-storage==2.11.0
+orjson==3.10.5
