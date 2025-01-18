@@ -30,7 +30,7 @@ COPY pyproject.toml pyproject.toml
 RUN set -e && \
     pip install -r requirements_api.txt --no-cache-dir --verbose && \
     pip install . --no-deps --no-cache-dir --verbose && \
-    rm -rf build dist src/mlops_project.egg-info 
+    rm -rf build dist src/mlops_project.egg-info
 
 ENV WANDB_API_KEY=edac1fed7ead25ecc22f33edb1468b626a2168e5
 ENV PYTHONPATH=src/mlops_project
