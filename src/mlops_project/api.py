@@ -91,6 +91,7 @@ def process_image(image):
         
         probs = torch.sigmoid(outputs).squeeze().item()
     category = "hotdog" if probs < 0.5 else "not hotdog"
+
     save_prediction_to_gcp(input_features, 1-probs, category)
 
     return category, 1-probs
