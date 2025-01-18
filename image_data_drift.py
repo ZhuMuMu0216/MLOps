@@ -1,6 +1,7 @@
 """
 This image_data_drift.py is only applied in the local test
 """
+
 import numpy as np
 import pandas as pd
 from torchvision import transforms
@@ -10,6 +11,7 @@ from google.cloud import storage
 import json
 from evidently.metrics import DataDriftTable
 from evidently.report import Report
+
 
 # Feature extraction function
 def extract_features(image):
@@ -27,6 +29,7 @@ def extract_features(image):
     sharpness = np.mean(np.abs(np.gradient(input_numpy)))
     return [avg_brightness, contrast, sharpness]
 
+
 # Define image loading function
 def load_images_and_extract_features(folder_path, label):
     """Load images from a folder, extract features, and return a list of features with labels."""
@@ -41,6 +44,7 @@ def load_images_and_extract_features(folder_path, label):
         except Exception as e:
             print(f"Error processing {file_path}: {e}")
     return features_list
+
 
 # Define paths
 hotdog_path = "data/train/hotdog"
@@ -62,9 +66,8 @@ reference_df.to_csv("reference_data.csv", index=False)
 print("Feature extraction completed. Saved to 'reference_data.csv'.")
 
 
-
 # Set Google Cloud credentials
-key_file= os.path.join("./keys/cloud_storage_key.json")
+key_file = os.path.join("./keys/cloud_storage_key.json")
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = key_file
 
 # Initialize storage client
@@ -73,18 +76,18 @@ bucket = storage_client.bucket("mlops-trained-models")
 
 # Retrieve all JSON files from the storage bucket
 blobs = bucket.list_blobs()
-json_files = [blob for blob in blobs if blob.name.endswith('.json')]
+json_files = [blob for blob in blobs if blob.name.endswith(".json")]
 
 # Merge JSON file contents
 dataframes = []
 for json_blob in json_files:
-    temp_file = json_blob.name.replace('/', '_')  # Temporary file name
+    temp_file = json_blob.name.replace("/", "_")  # Temporary file name
     json_blob.download_to_filename(temp_file)  # Download JSON file
     try:
         # Load JSON file
-        with open(temp_file, 'r') as f:
+        with open(temp_file, "r") as f:
             data = json.load(f)
-        
+
         # Construct DataFrame based on JSON structure
         if isinstance(data, list):  # If the JSON is a list
             df = pd.DataFrame(data)
@@ -93,7 +96,7 @@ for json_blob in json_files:
         else:
             print(f"Unsupported JSON format in {json_blob.name}")
             continue
-        
+
         dataframes.append(df)
     except Exception as e:
         print(f"Error reading {json_blob.name}: {e}")
@@ -109,15 +112,14 @@ else:
     print("No valid JSON files found in the bucket.")
 
 
-
-'''
+"""
 Below is the code to compare the reference and current data and generate a report on the data drift.
-'''
+"""
 reference_df["category"] = reference_df["category"].apply(lambda x: 1 if x == "hotdog" else 0)
 current_df["category"] = current_df["category"].apply(lambda x: 1 if x == "hotdog" else 0)
 
-# Drop non-numerical columns 
-numerical_columns = ["avg_brightness", "contrast", "sharpness","category"]
+# Drop non-numerical columns
+numerical_columns = ["avg_brightness", "contrast", "sharpness", "category"]
 reference_features = reference_df[numerical_columns]
 current_features = current_df[numerical_columns]
 
