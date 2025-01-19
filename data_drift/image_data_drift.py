@@ -47,8 +47,8 @@ def load_images_and_extract_features(folder_path, label):
 
 
 # Define paths
-hotdog_path = "data/train/hotdog"
-nothotdog_path = "data/train/nothotdog"
+hotdog_path = "./data/train/hotdog"
+nothotdog_path = "./data/train/nothotdog"
 
 # Extract features
 hotdog_features = load_images_and_extract_features(hotdog_path, "hotdog")
@@ -62,7 +62,7 @@ columns = ["avg_brightness", "contrast", "sharpness", "category"]
 reference_df = pd.DataFrame(all_features, columns=columns)
 
 # Save as CSV file
-reference_df.to_csv("reference_data.csv", index=False)
+reference_df.to_csv("data_drift/reference_data.csv", index=False)
 print("Feature extraction completed. Saved to 'reference_data.csv'.")
 
 
@@ -106,7 +106,7 @@ for json_blob in json_files:
 # Combine all DataFrames
 if dataframes:
     current_df = pd.concat(dataframes, ignore_index=True)
-    current_df.to_csv("current_data.csv", index=False)
+    current_df.to_csv("data_drift/current_data.csv", index=False)
     print("All JSON files have been merged into 'current_data.csv'.")
 else:
     print("No valid JSON files found in the bucket.")
@@ -130,5 +130,5 @@ report = Report(metrics=[DataDriftTable()])
 report.run(reference_data=reference_features, current_data=current_features)
 
 # Save the report as an HTML file
-report.save_html("data_drift_report.html")
+report.save_html("data_drift/data_drift_report.html")
 print("Data drift report has been saved to 'data_drift_report.html'.")

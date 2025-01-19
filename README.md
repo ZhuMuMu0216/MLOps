@@ -1,8 +1,7 @@
-## Project Description: Deep Learning in Classification - Hotdog/Not Hotdog
-
-This repository is for the project of course: [DTU-MLOps](https://skaftenicki.github.io/dtu_mlops/#course-organization). The primary goal of this project is to train a deep learning model that classifies images as either containing a hotdog or not. It's not a difficult task, but it's a good way for us to get familiar with the Machine Learning Operations.
-
-<!-- This task, while simple in its premise, serves as a practical application of image classification using deep learning and demonstrates how neural networks can learn to distinguish between similar and dissimilar objects. Such classification tasks have wide-ranging implications, from food recognition in mobile applications to broader fields like medical imaging and autonomous driving. -->
+# Hotdog/Not Hotdog
+### 1. Project description
+If you've seen Silicon Valley, you must be familiar with this application designed by Jian Yang. We chose to implement the complete process of building and deploying the hotdog/nothotdog model as the project for our course [DTU-MLOps](https://skaftenicki.github.io/dtu_mlops/#course-organization). The primary goal of this project is to train a deep learning model that classifies images as either containing a hotdog or not. It's not a difficult task, but it's a good way for us to get familiar with the Machine Learning Operations.
+![alt text](docs/images/silicon_valley_image.png)
 
 For this project, we will leverage the dataset available on Kaggle: [Hotdog-NotHotdog](https://www.kaggle.com/datasets/thedatasith/hotdog-nothotdog). This dataset provides labeled images of hotdogs and non-hotdogs, and it has already been split into training set and test set, which makes it an ideal candidate for training and evaluating a supervised deep learning model. While the dataset’s size and diversity will influence the model’s performance, basic preprocessing steps, such as resizing images to a fixed size (e.g., 128x128), normalizing pixel values, and data augmentation (e.g., rotations, flips), will be applied to increase model robustness. We will utilize transfer learning by initializing ResNet18 with pre-trained weights on ImageNet, fine-tuning it for the hotdog classification task.
 
@@ -22,17 +21,22 @@ During the whole project, we will focuses on getting organized and be familiar w
 
 5. We use [Unit testing](https://skaftenicki.github.io/dtu_mlops/s5_continuous_integration/unittesting/) to test individual parts of your code base to test for correctness. Besides, we use the [GitHub actions](https://skaftenicki.github.io/dtu_mlops/s5_continuous_integration/github_actions/) to automate the testing, such that it is done every time we push to our repository. If we combine this with only pushing to branches and then only merging these branches whenever all automated testing has passed, our code should be fairly safe against bugs.
 
-6. We use the [GCP](https://cloud.google.com/storage?utm_source=google&utm_medium=cpc&utm_campaign=emea-dk-all-en-dr-bkws-all-all-trial-b-gcp-1707574&utm_content=text-ad-none-any-dev_c-cre_677656980141-adgp_Hybrid+%7C+BKWS+-+MIX+%7C+Txt+-+Storage+-+Cloud+Storage-kwid_43700078358185205-kwd-298160887431-userloc_1005023&utm_term=kw_cloud+google+storage-net_g-plac_&&gad_source=1&gclid=CjwKCAiAhP67BhAVEiwA2E_9g7MwNmFWBQitjl6x7d70GodgOTlA5IIRxzQz1P-SJ_g2eSfNHLzFmhoCvzAQAvD_BwE&gclsrc=aw.ds&hl=en) to build our remote virtual machine, storage our dataset, make CI/CD and use the Vertex AI to
-train our model. It's really a powerful platform made by Google.
-
-7. Deployment(Haven't learned this yet)
-
-8. Monitoring(Haven't learned this yet)
+6. We use the [Google Cloud Plantform](https://cloud.google.com/cloud-console?utm_source=google&utm_medium=cpc&utm_campaign=emea-dk-all-en-dr-bkws-all-all-trial-b-gcp-1707574&utm_content=text-ad-none-any-DEV_c-CRE_677656980138-ADGP_Hybrid+%7C+BKWS+-+MIX+%7C+Txt+-+Management+Developer+Tools+-+Cloud+Console-KWID_43700078358185187-kwd-296393718382-userloc_1005023&utm_term=KW_google+cloud+console-NET_g-PLAC_&&gad_source=1&gclid=Cj0KCQiA4rK8BhD7ARIsAFe5LXLNoBoJp6f8pX0X5ogMNQCTAIyH8VKE2te_VqQxpq0sPcrNSnFwap0aAgcjEALw_wcB&gclsrc=aw.ds&hl=en) during the whole project and It's really a powerful platform made by Google. We use [Google Cloud Build](https://cloud.google.com/build?hl=en) for CI/CD automation, then upload the built images to [Google Cloud Container Registry](https://cloud.google.com/artifact-registry/docs), and finally host the model-training jobs and API services on [Google Cloud Run](https://cloud.google.com/run?hl=en). The trained model weights and dataset will be saved in a Cloud Storage bucket.
 
 
-## Start our project!
+7. We use the [EVIDENTLY AI](https://skaftenicki.github.io/dtu_mlops/s8_monitoring/data_drifting/) to monitor data drifting and target drifting of our application. Each time we call the API, the backend automatically saves the attributes of the images we have used in a JSON file to the bucket in Cloud storage. In the end, we compare the saved data with our training data to check for drifting.
 
-### 1. Download the overall project files
+---
+
+### 2. How to call our API?
+Visit this website https://dtuhotdogdetect.vercel.app/, upload your image, and you will receive the prediction result. Due to the limited balance on our GCP account, you will not be able to access our website by mid-February.
+![](docs/images/ui_our_app.png)
+
+---
+### 3. Start our project on your local machine!
+**ATTENTION:** Since we did lots of operations on the GCP(for example, downloading the pre-trained model from cloud storage), you also need to create your own GCP account and replace the project id, bucket name etc.
+
+#### 1. Download the overall project files
 1. Create your directory in your local machine.
 
 2. Folk our repository / Create the git file and clone our repository
@@ -42,7 +46,7 @@ train our model. It's really a powerful platform made by Google.
     git clone https://github.com/ZhuMuMu0216/MLOps.git
     ```
 
-### 2. Create venv
+#### 2. Create venv
 1. Create the virtual environment
     ```dash
     python -m venv venv       # create environment
@@ -53,14 +57,14 @@ train our model. It's really a powerful platform made by Google.
     pip install .             # install all the packages
     ```
 
-### 3. Download the dataset
+#### 3. Download the dataset
 1. You should enter the `MLOps` directory.
 
 2. Run the below command in your terminal.
     ```
     dvc pull
     ```
-### 4. Run the code in docker
+#### 4. Run the code in docker
 1. You should enter the `MLOps` directory.
 
 2. Run the below command in your terminal, and you will build the docker image based on my dockerfile.
@@ -79,11 +83,20 @@ train our model. It's really a powerful platform made by Google.
 4. As we didn't COPY the data into our docker image, we dynamically mount the Host's `data` Directory to the Container's `/data`.
     ```bash
     '''In Linux system'''
-    docker run -v $(pwd)/data:/data -it my_image
+    docker run -v $(pwd)/data:/data -it train_image
 
     '''In Windows Shell'''
-    docker run -v ${PWD}/data:/data -it my_image
-
-5. We can run the docker image right now.
-    ```bash
     docker run -v ${PWD}/data:/data -it train_image
+    ```
+
+5. Deploy the API
+    ```
+    docker build -t api-service -f api.dockerfile .
+    docker run -d -p 8080:8080 api-service
+    ```
+    You can access your API at http://localhost:8080
+
+---
+
+### 4. Deploy on the cloud(with CI/CD automation)
+First, you need to add all your GCP credentials to the secrets of your repository. secondly, use the clondbuild.yaml file to write your deployment. Finally, use GitHub actions to get CI/CD automation (you need to add .json file under the directory /.github/workflows/). Feel free to check out [GitHub actions](https://skaftenicki.github.io/dtu_mlops/s5_continuous_integration/github_actions/) and [Cloud deployment](https://skaftenicki.github.io/dtu_mlops/s7_deployment/cloud_deployment/) for more details.

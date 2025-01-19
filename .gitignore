@@ -188,7 +188,7 @@ vertex-ai/*
 # ruff
 .ruff_cache/
 wandb/
-keys/*keys/*.json
+
 # Key file for GCP buckets
 keys/*.json
 src/mlops_project/wandb/
@@ -201,3 +201,4 @@ src/mlops_project/wandb/
 /.idea/vcs.xml
 models/model.pth
 optimizer_performance_plots/Adam_performance.png
+keys/*
