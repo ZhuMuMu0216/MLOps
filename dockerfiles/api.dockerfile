@@ -4,18 +4,17 @@ RUN apt update && \
     apt install --no-install-recommends -y build-essential gcc bash && \
     apt clean && rm -rf /var/lib/apt/lists/*
 
-# 1. 安装系统构建依赖 + curl（用于安装 Rust）
+# 1. Install system build dependencies + curl (used to install Rust)
 RUN apt-get update && apt-get install --no-install-recommends -y \
     build-essential gcc bash curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
-# 2. 安装 Rust (通过 rustup)。也可以用 apt-get install cargo rustc (版本可能较旧)
+# 2. Install Rust (via rustup). Alternatively, use apt-get install cargo rustc (but the version may be outdated)
 RUN curl https://sh.rustup.rs -sSf | bash -s -- -y && \
-    # 为了后续命令行能找到 cargo，把它加入 PATH
+    # Add cargo to PATH for subsequent commands to locate it
     echo 'source $HOME/.cargo/env' >> /root/.bashrc
 
-
-# 这里显式将 cargo bin 路径写入环境变量
+# Explicitly add the cargo bin directory to the PATH environment variable
 ENV PATH="/root/.cargo/bin:$PATH"
 
 WORKDIR /MLOps/
