@@ -7,7 +7,8 @@ import torchvision.transforms as transforms
 from google.cloud import storage
 from data import get_dataloaders
 from model import ResNet18
-
+from hydra import compose, initialize
+from omegaconf import DictConfig
 app = typer.Typer()
 
 
@@ -118,9 +119,6 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
     # save the best model weights
     torch.save(best_model_wts, "models/best_model.pth")
 
-    # # Save performance plot
-    # save_path = os.path.join(save_dir, f"{optimizer.__class__.__name__}_performance.png")
-    # plot_performance(train_losses, val_losses, train_accs, val_accs, optimizer.__class__.__name__, save_path)
 
     """
     Upload the model to GCP cloud storage
@@ -130,10 +128,10 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
 
     project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 
-    bucket_name = "mlops-trained-models"  # 替换为你的存储桶名称
-    source_file_name = os.path.join(project_root, "models/best_model.pth")  # 替换为模型文件的本地路径
-    destination_blob_name = "models/model.pth"  # 替换为存储路径
-    key_file = os.path.join(project_root, "keys/cloud_storage_key.json")  # 服务账号密钥文件的路径
+    bucket_name = "mlops-trained-models"   # GCP bucket name
+    source_file_name = os.path.join(project_root, "models/best_model.pth")  
+    destination_blob_name = "models/model.pth"  # Destination file name in the bucket
+    key_file = os.path.join(project_root, "keys/cloud_storage_key.json")  # Path to the service account key file
     upload_to_gcp_bucket(bucket_name, source_file_name, destination_blob_name, key_file)
 
     performance = {
@@ -146,36 +144,25 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
     return model, performance
 
 
-# 上传到 GCP Cloud Storage
 def upload_to_gcp_bucket(bucket_name, source_file_name, destination_blob_name, key_file):
-    """
-    上传文件到 GCP 的 Cloud Storage。
-    :param bucket_name: GCP 存储桶的名称。
-    :param source_file_name: 本地文件路径。
-    :param destination_blob_name: 存储到存储桶中的目标文件路径。
-    :param key_file: 服务账号的密钥文件路径。
-    """
-    # 设置 Google Cloud 的认证环境变量
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = key_file
-
-    # 初始化存储客户端
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(destination_blob_name)
-
-    # 上传文件
     blob.upload_from_filename(source_file_name)
     print(f"File {source_file_name} uploaded to {destination_blob_name}.")
 
 
 @app.command()
-def entrypoint(epoch: int = 2):
+def entrypoint(config_name: str = "config.yaml"):
     """
     Entry point for the above training method
 
     Returns:
         model_performances (dict): Dictionary containing model performances.
     """
+    with initialize(config_path="../../configs", version_base=None):
+        cfg = compose(config_name=config_name)
     try:
         wandb.login(key=os.getenv("WANDB_API_KEY"))
     except Exception as e:
@@ -188,10 +175,10 @@ def entrypoint(epoch: int = 2):
         project="my-awesome-project",
         # track hyperparameters and run metadata
         config={
-            "learning_rate": 0.001,
+            "learning_rate": cfg.hyperparameters.learning_rate,
             "architecture": "ResNet",
             "dataset": "Hotdog/notHodog",
-            "epochs": epoch,
+            "epochs": cfg.hyperparameters.epochs,
         },
     )
 
@@ -210,8 +197,8 @@ def entrypoint(epoch: int = 2):
     # Load the model
     model = ResNet18(num_classes=1)
     # Define the optimizers
-    optimizers = (torch.optim.Adam(model.parameters(), lr=0.001),)
-    num_epochs = epoch
+    optimizers = (torch.optim.Adam(model.parameters(), lr=cfg.hyperparameters.learning_rate),)
+    num_epochs = cfg.hyperparameters.epochs
     model_performances = {}
 
     for optimizer in optimizers:
@@ -223,7 +210,6 @@ def entrypoint(epoch: int = 2):
     wandb.finish()
 
     return model_performances
-
 
 if __name__ == "__main__":
     model_performances = app()
