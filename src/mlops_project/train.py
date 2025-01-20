@@ -8,7 +8,7 @@ from google.cloud import storage
 from data import get_dataloaders
 from model import ResNet18
 from hydra import compose, initialize
-from omegaconf import DictConfig
+
 app = typer.Typer()
 
 
@@ -119,7 +119,6 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
     # save the best model weights
     torch.save(best_model_wts, "models/best_model.pth")
 
-
     """
     Upload the model to GCP cloud storage
     """
@@ -128,8 +127,8 @@ def train_model(model, train_loader, test_loader, optimizer, num_epochs):
 
     project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 
-    bucket_name = "mlops-trained-models"   # GCP bucket name
-    source_file_name = os.path.join(project_root, "models/best_model.pth")  
+    bucket_name = "mlops-trained-models"  # GCP bucket name
+    source_file_name = os.path.join(project_root, "models/best_model.pth")
     destination_blob_name = "models/model.pth"  # Destination file name in the bucket
     key_file = os.path.join(project_root, "keys/cloud_storage_key.json")  # Path to the service account key file
     upload_to_gcp_bucket(bucket_name, source_file_name, destination_blob_name, key_file)
@@ -210,6 +209,7 @@ def entrypoint(config_name: str = "config.yaml"):
     wandb.finish()
 
     return model_performances
+
 
 if __name__ == "__main__":
     model_performances = app()
