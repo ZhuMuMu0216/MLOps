@@ -9,7 +9,7 @@ For this project, we will leverage the dataset available on Kaggle: [Hotdog-NotH
 
 2. The neural network architecture we will employ is [ResNet](https://arxiv.org/pdf/1512.03385) which is proposed by Kaiming in 2016, known for its effectiveness in extracting features from images due to its residual connections, which alleviate the vanishing gradient problem in deep networks.
 
-During the whole project, we will focuses on getting organized and be familiar with good development practices. Besides, we aim to have good version control and ensure the reproducibility. We below tools to achieve the whole project.
+During the whole project, we will focus on getting organized and be familiar with good development practices. Besides, we aim to have good version control and ensure the reproducibility. We ues below tools to achieve the whole project.
 
 1. We use a [cookiecutter template](https://github.com/SkafteNicki/mlops_template) for getting started with Machine Learning Operations (MLOps).
 
@@ -19,9 +19,9 @@ During the whole project, we will focuses on getting organized and be familiar w
 
 4. During developing the code, we use [pdb](https://docs.python.org/3/library/pdb.html) to debug, use [loguru](https://loguru.readthedocs.io/en/stable/) to make logging and use [wandb](https://wandb.ai/site/) to tracking our training results and hardware performance.
 
-5. We use [Unit testing](https://skaftenicki.github.io/dtu_mlops/s5_continuous_integration/unittesting/) to test individual parts of your code base to test for correctness. Besides, we use the [GitHub actions](https://skaftenicki.github.io/dtu_mlops/s5_continuous_integration/github_actions/) to automate the testing, such that it is done every time we push to our repository. If we combine this with only pushing to branches and then only merging these branches whenever all automated testing has passed, our code should be fairly safe against bugs.
+5. We use [unit testing](https://skaftenicki.github.io/dtu_mlops/s5_continuous_integration/unittesting/) to validate the correctness of individual parts of the code base. Additionally, we use [GitHub Actions](https://skaftenicki.github.io/dtu_mlops/s5_continuous_integration/github_actions/) to automate the testing process, ensuring it is triggered every time we push code to our repository. By adopting a workflow where code is merged only after all automated tests have passed, we can ensure our codebase is reasonably protected against bugs.
 
-6. We use the [Google Cloud Plantform](https://cloud.google.com/cloud-console?utm_source=google&utm_medium=cpc&utm_campaign=emea-dk-all-en-dr-bkws-all-all-trial-b-gcp-1707574&utm_content=text-ad-none-any-DEV_c-CRE_677656980138-ADGP_Hybrid+%7C+BKWS+-+MIX+%7C+Txt+-+Management+Developer+Tools+-+Cloud+Console-KWID_43700078358185187-kwd-296393718382-userloc_1005023&utm_term=KW_google+cloud+console-NET_g-PLAC_&&gad_source=1&gclid=Cj0KCQiA4rK8BhD7ARIsAFe5LXLNoBoJp6f8pX0X5ogMNQCTAIyH8VKE2te_VqQxpq0sPcrNSnFwap0aAgcjEALw_wcB&gclsrc=aw.ds&hl=en) during the whole project and It's really a powerful platform made by Google. We use [Google Cloud Build](https://cloud.google.com/build?hl=en) for CI/CD automation, then upload the built images to [Google Cloud Container Registry](https://cloud.google.com/artifact-registry/docs), and finally host the model-training jobs and API services on [Google Cloud Run](https://cloud.google.com/run?hl=en). The trained model weights and dataset will be saved in a Cloud Storage bucket.
+6. We use the [Google Cloud Plantform](https://cloud.google.com/cloud-console?utm_source=google&utm_medium=cpc&utm_campaign=emea-dk-all-en-dr-bkws-all-all-trial-b-gcp-1707574&utm_content=text-ad-none-any-DEV_c-CRE_677656980138-ADGP_Hybrid+%7C+BKWS+-+MIX+%7C+Txt+-+Management+Developer+Tools+-+Cloud+Console-KWID_43700078358185187-kwd-296393718382-userloc_1005023&utm_term=KW_google+cloud+console-NET_g-PLAC_&&gad_source=1&gclid=Cj0KCQiA4rK8BhD7ARIsAFe5LXLNoBoJp6f8pX0X5ogMNQCTAIyH8VKE2te_VqQxpq0sPcrNSnFwap0aAgcjEALw_wcB&gclsrc=aw.ds&hl=en) during the whole project and It's really a powerful platform made by Google. We use [Google Cloud Build](https://cloud.google.com/build?hl=en) to build docker image, which are then uploaded to [Google Cloud Artifact Registry](https://cloud.google.com/artifact-registry/docs). Finally, [Google Cloud Run](https://cloud.google.com/run?hl=en) hosts the model-training jobs and the API services. The datasets and the trained model weights are saved in a Cloud Storage Bucket.
 
 
 7. We use the [EVIDENTLY AI](https://skaftenicki.github.io/dtu_mlops/s8_monitoring/data_drifting/) to monitor data drifting and target drifting of our application. Each time we call the API, the backend automatically saves the attributes of the images we have used in a JSON file to the bucket in Cloud storage. In the end, we compare the saved data with our training data to check for drifting.
@@ -29,7 +29,7 @@ During the whole project, we will focuses on getting organized and be familiar w
 ---
 
 ### 2. How to call our API?
-Visit this website https://dtuhotdogdetect.vercel.app/, upload your image, and you will receive the prediction result. Due to the limited balance on our GCP account, you will not be able to access our website by mid-February.
+Visit this website https://dtuhotdogdetect.vercel.app/, upload your image, and you will receive the prediction result. Due to the limited balance on our GCP account, you will not be able to access our website after mid-February.
 ![](docs/images/ui_our_app.png)
 
 ---
@@ -42,7 +42,6 @@ Visit this website https://dtuhotdogdetect.vercel.app/, upload your image, and y
 2. Folk our repository / Create the git file and clone our repository
 
     ```dash
-    git init
     git clone https://github.com/ZhuMuMu0216/MLOps.git
     ```
 
@@ -98,5 +97,5 @@ Visit this website https://dtuhotdogdetect.vercel.app/, upload your image, and y
 
 ---
 
-### 4. Deploy on the cloud(with CI/CD automation)
-First, you need to add all your GCP credentials to the secrets of your repository. secondly, use the clondbuild.yaml file to write your deployment. Finally, use GitHub actions to get CI/CD automation (you need to add .json file under the directory /.github/workflows/). Feel free to check out [GitHub actions](https://skaftenicki.github.io/dtu_mlops/s5_continuous_integration/github_actions/) and [Cloud deployment](https://skaftenicki.github.io/dtu_mlops/s7_deployment/cloud_deployment/) for more details.
+### 4. Deploy on the cloud (with CI/CD automation)
+First, you need to add all your GCP credentials to the secrets of your repository. secondly, use the clondbuild.yaml file to write your deployment. Finally, use GitHub actions to get CI/CD automation (you need to add .json file under the directory /.github/workflows/). Feel free to check out [GitHub Actions](https://skaftenicki.github.io/dtu_mlops/s5_continuous_integration/github_actions/) and [Cloud deployment](https://skaftenicki.github.io/dtu_mlops/s7_deployment/cloud_deployment/) for more details.
