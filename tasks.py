@@ -1,6 +1,7 @@
 import os
 from invoke import Context, task
 from typing import Optional
+
 WINDOWS = os.name == "nt"
 PROJECT_NAME = "mlops_project"
 PYTHON_VERSION = "3.11"
@@ -44,7 +45,7 @@ def train(ctx: Context, epochs: Optional[int] = None) -> None:
 
     if epochs is not None:
         base_command += f" --epochs {epochs}"
-    
+
     ctx.run(base_command, echo=True, pty=not WINDOWS)
 
 

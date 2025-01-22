@@ -11,4 +11,3 @@ Here is the link of our website: [Hotdog/notHotdog](https://dtuhotdogdetect.verc
 <img src="images/ui_our_app.png" alt="UI of our app" style="display: block; margin: 0 auto; width: 100%;">
 
 <p style="text-align: center;"><em>Figure 2: The website of our application.</em></p>
-
