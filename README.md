@@ -29,7 +29,7 @@ During the whole project, we will focus on getting organized and be familiar wit
 ---
 
 ### 2. How to call our API?
-Visit our application document [Document](https://zhumumu0216.github.io/MLOps/documents/api/), you can know more details about our application. 
+Visit our application document [Document](https://zhumumu0216.github.io/MLOps/documents/api/), you can know more details about our application.
 
 Besides, you can visit this website [Hotdog/notHotdog](https://dtuhotdogdetect.vercel.app/) directly to detect hotdog or not. Upload your image, and you will receive the prediction result. Due to the limited balance on our GCP account, you will not be able to access our website after mid-February.
 ![](docs/source/images/ui_our_app.png)
