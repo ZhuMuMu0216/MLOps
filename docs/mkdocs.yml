@@ -27,7 +27,7 @@ theme:
 
 
 nav:
-  - Home: 
+  - Home:
     - index.md
   - Guide:
     - documents/guide.md

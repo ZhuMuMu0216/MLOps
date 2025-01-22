@@ -9,6 +9,7 @@ from data import get_dataloaders
 from model import ResNet18
 from hydra import compose, initialize
 from typing import Optional
+
 app = typer.Typer()
 
 
@@ -153,8 +154,7 @@ def upload_to_gcp_bucket(bucket_name, source_file_name, destination_blob_name, k
 
 
 @app.command()
-def entrypoint(config_name: str = "config.yaml",
-               epochs: Optional[int] = None):
+def entrypoint(config_name: str = "config.yaml", epochs: Optional[int] = None):
     """
     Entry point for the above training method
 
