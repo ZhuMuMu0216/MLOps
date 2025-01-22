@@ -23,3 +23,6 @@ requests
 evidently
 hydra-core==1.3.0
 omegaconf
+mkdocs
+mkdocs-material
+mkdocstrings
