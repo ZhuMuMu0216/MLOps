@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   deploy:
+
     name: Deploy docs
     runs-on: ubuntu-latest
     steps:
@@ -27,4 +28,6 @@ jobs:
       run: pip install -r requirements.txt
 
     - name: Deploy docs
-      run: mkdocs gh-deploy --force
+      run: |
+        cd docs
+        mkdocs gh-deploy --force
