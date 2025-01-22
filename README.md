@@ -1,7 +1,7 @@
 # Hotdog/Not Hotdog
 ### 1. Project description
 If you've seen Silicon Valley, you must be familiar with this application designed by Jian Yang. We chose to implement the complete process of building and deploying the hotdog/nothotdog model as the project for our course [DTU-MLOps](https://skaftenicki.github.io/dtu_mlops/#course-organization). The primary goal of this project is to train a deep learning model that classifies images as either containing a hotdog or not. It's not a difficult task, but it's a good way for us to get familiar with the Machine Learning Operations.
-![alt text](docs/images/silicon_valley_image.png)
+![alt text](docs/source/images/silicon_valley_image.png)
 
 For this project, we will leverage the dataset available on Kaggle: [Hotdog-NotHotdog](https://www.kaggle.com/datasets/thedatasith/hotdog-nothotdog). This dataset provides labeled images of hotdogs and non-hotdogs, and it has already been split into training set and test set, which makes it an ideal candidate for training and evaluating a supervised deep learning model. While the dataset’s size and diversity will influence the model’s performance, basic preprocessing steps, such as resizing images to a fixed size (e.g., 128x128), normalizing pixel values, and data augmentation (e.g., rotations, flips), will be applied to increase model robustness. We will utilize transfer learning by initializing ResNet18 with pre-trained weights on ImageNet, fine-tuning it for the hotdog classification task.
 
@@ -30,7 +30,7 @@ During the whole project, we will focus on getting organized and be familiar wit
 
 ### 2. How to call our API?
 Visit this website https://dtuhotdogdetect.vercel.app/, upload your image, and you will receive the prediction result. Due to the limited balance on our GCP account, you will not be able to access our website after mid-February.
-![](docs/images/ui_our_app.png)
+![](docs/source/images/ui_our_app.png)
 
 ---
 ### 3. Start our project on your local machine!
