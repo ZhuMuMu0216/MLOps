@@ -561,7 +561,7 @@ If we find that there is a significant shift in the features of user input image
 >
 > Answer:
 
-Up to 19th Jan, we have used 32 krone and 3.2 dollar in total (We use the free credit from Google before getting the credits from the learn). The Compute Engine incurred the highest cost of 23.37 krone because we used it for model training and testing in the early stages. However, we later migrated to Cloud Run. Artifact registry is the second most expensive service, because every time we merge the code to the main branch on GitHub, we will rebuild all the images in the cloud and upload them to the Artifact Registry, which takes up a lot of memory and costs a lot of credits.
+Up to 22th Jan, we have used 32 krone and 4.75 dollar in total (We use the free credit from Google before getting the credits from the learn). The Compute Engine incurred the highest cost of 30.37 krone because we used it for model training and testing in the early stages. However, we later migrated to Cloud Run. Artifact registry is the second most expensive service($3.74), because every time we merge the code to the main branch on GitHub, we will rebuild all the images in the cloud and upload them to the Artifact Registry, which takes up a lot of memory and costs a lot of credits.
 
 Overall speaking, working in the cloud is very convenient, though it can sometimes be troublesome to familiarize yourself with various commands, authorization processes, and configuration environments. This way, we are not constrained by the limited performance of our computers. Once tasks are deployed, we can shut down our computers at any time, which adds to the convenience.
 
