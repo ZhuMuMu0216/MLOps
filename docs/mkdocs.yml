@@ -28,13 +28,15 @@ theme:
 
 nav:
   - Home: 
-    - documents/index.md
+    - index.md
   - Guide:
     - documents/guide.md
   - API documentation:
     - documents/api.md
   - About:
     - documents/contributing.md
+  # - MY API:
+  #   - documents/my_api.md
 
 
 markdown_extensions:
