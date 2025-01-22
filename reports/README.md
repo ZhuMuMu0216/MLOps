@@ -351,12 +351,12 @@ These two approaches allowed us to achieve full reproducibility of my experiment
 
 ![W&B experiment1](figures/W&B_experiment1.png)
 ![W&B experiment2](figures/W&B_experiment2.png)
+![W&B experiment3](figures/W&B_experiment3.png)
+As seen in the first image, we have tracked loss graphs and accuracy graphs, which provide critical insights into the performance of our model during training. Monitoring loss helps us evaluate how effectively the model minimizes the error between predictions and actual outcomes. By observing loss trends, we can identify potential issues like overfitting or underfitting and determine when the model reaches optimal performance. When the val accuracy tends to be stable and the train accuracy is still rising, it can be determined that overfitting has occurred, and we can use the early stopping method. In addition, you can actually monitor other metrics.
 
-As seen in the first image when have tracked loss graphs and accuracy graphs which both inform us about the loss and accuracy during our training in our experiments.
-Monitoring loss helps evaluate how well the model is minimizing the error between predictions and actual outcomes. Similarly, tracking accuracy provides direct insight into the model’s ability to generalize to the data. We can observe the trending to identify when the model reaches its peak performance or if we need an early stop to stop the training etc.
+In the second image, we observe system performance metrics, which are default features in wandb. Efficient resource management is crucial for training large models, as it directly impacts training time and scalability. For instance, if system metrics reveal that the model excessively strains the GPU or CPU, we might consider upgrading hardware. Tracking system metrics enables optimized resource allocation, ensuring stable, efficient, and scalable training workflows.
 
-As seen in the second image we are also tracking System performance but it is the default for wandb.This is important because efficient resource management directly impacts model training time and scalability. For example, If we find that the model is squeezing the performance of the GPU or CPU to the extreme, we can consider replacing hardware with better performance in the compute engine.
-By tracking system metrics, we can optimize resource allocation, ensuring suitable training workflows.
+In the third image, we use wandb to record hyperparameters(epochs, learning rate) and basic information of the model(architecture, dataset). This helps us review after completing all experiments.
 
 ### Question 15
 
@@ -561,7 +561,7 @@ If we find that there is a significant shift in the features of user input image
 >
 > Answer:
 
-Up to 19th Jan, we have used 32 krone and 3.2 dollar in total (We use the free credit from Google before getting the credits from the learn). The Compute Engine incurred the highest cost of 23.37 krone because we used it for model training and testing in the early stages. However, we later migrated to Cloud Run. Artifact registry is the second most expensive service, because every time we merge the code to the main branch on GitHub, we will rebuild all the images in the cloud and upload them to the Artifact Registry, which takes up a lot of memory and costs a lot of credits.
+Up to 22th Jan, we have used 32 krone and 4.75 dollar in total (We use the free credit from Google before getting the credits from the learn). The Compute Engine incurred the highest cost of 30.37 krone because we used it for model training and testing in the early stages. However, we later migrated to Cloud Run. Artifact registry is the second most expensive service($3.74), because every time we merge the code to the main branch on GitHub, we will rebuild all the images in the cloud and upload them to the Artifact Registry, which takes up a lot of memory and costs a lot of credits.
 
 Overall speaking, working in the cloud is very convenient, though it can sometimes be troublesome to familiarize yourself with various commands, authorization processes, and configuration environments. This way, we are not constrained by the limited performance of our computers. Once tasks are deployed, we can shut down our computers at any time, which adds to the convenience.
 
