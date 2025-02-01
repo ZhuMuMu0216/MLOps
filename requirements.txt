@@ -10,7 +10,7 @@ dvc==3.58.0
 dvc-gs==3.0.1
 matplotlib==3.10.0
 pandas==1.5.3
-numpy==1.26.4
+numpy==2.2.2
 wandb==0.19.2
 grpcio==1.69.0
 markdown==3.7
